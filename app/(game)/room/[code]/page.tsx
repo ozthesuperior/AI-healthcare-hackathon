@@ -497,24 +497,26 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
           </p>
 
           <div className="flex flex-wrap gap-2 mb-3">
-            {[
-              { l: "BP", v: currentCase.vitals.bp },
-              { l: "HR", v: `${currentCase.vitals.hr} bpm` },
-              { l: "Temp", v: currentCase.vitals.temp },
-              { l: "RR", v: `${currentCase.vitals.rr}/min` },
-              { l: "SpO2", v: `${currentCase.vitals.spo2}%` },
-            ].map((v) => (
-              <div key={v.l} className="flex items-center gap-1.5 px-2.5 py-1.5 bg-muted rounded-lg">
-                <Activity className="w-3 h-3 text-muted-foreground" />
-                <span className="text-xs font-medium">{v.l}: {v.v}</span>
-              </div>
-            ))}
+            {(currentCase.physicalExamination?.vitals ?? []).map((vital) => {
+              const [label, value] = Object.entries(vital)[0]
+              return (
+                <div key={label} className="flex items-center gap-1.5 px-2.5 py-1.5 bg-muted rounded-lg">
+                  <Activity className="w-3 h-3 text-muted-foreground" />
+                  <span className="text-xs font-medium">{label}: {value}</span>
+                </div>
+              )
+            })}
           </div>
 
-          <div className="flex flex-wrap gap-1.5">
-            {currentCase.symptoms.map((s) => (
-              <span key={s} className="text-xs px-2 py-1 bg-secondary rounded-md text-secondary-foreground">{s}</span>
-            ))}
+          <div className="space-y-1 mb-3">
+            {(currentCase.physicalExamination?.findings ?? []).map((finding) => {
+              const [label, value] = Object.entries(finding)[0]
+              return (
+                <p key={label} className="text-xs text-muted-foreground">
+                  <span className="font-medium text-foreground">{label}:</span> {value}
+                </p>
+              )
+            })}
           </div>
 
           {currentCase.labs && currentCase.labs.length > 0 && (

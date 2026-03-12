@@ -4,7 +4,13 @@ import { useState, useEffect, useCallback, use } from "react"
 import { useRouter } from "next/navigation"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { X, Clock, User, Activity, CheckCircle2, XCircle, Lightbulb, ChevronRight } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { X, Clock, User, CheckCircle2, XCircle, Lightbulb, ChevronRight, Stethoscope, FlaskConical } from "lucide-react"
 import type { Case } from "@/lib/types"
 
 type SafeCase = Omit<Case, "correct_answer" | "accepted_synonyms" | "explanation" | "distractors">
@@ -47,6 +53,7 @@ export default function GameSessionPage({ params }: { params: Promise<{ sessionI
   const [timeRemainingMs, setTimeRemainingMs] = useState<number | null>(null)
   const [blitzTimeMs, setBlitzTimeMs] = useState<number>(30_000)
   const [timedOut, setTimedOut] = useState(false)
+  const [examModalOpen, setExamModalOpen] = useState(false)
 
   // Load session from sessionStorage
   useEffect(() => {
@@ -56,6 +63,12 @@ export default function GameSessionPage({ params }: { params: Promise<{ sessionI
       return
     }
     const data = JSON.parse(raw) as SessionData
+    // Evict stale sessions that predate the physicalExamination schema
+    if (data.cases?.length && !data.cases[0].physicalExamination) {
+      sessionStorage.removeItem(`rxarena_session_${sessionId}`)
+      router.push("/play")
+      return
+    }
     setSessionData(data)
     if (data.timeLimitMs) setTimeRemainingMs(data.timeLimitMs)
     if (data.mode === "blitz") setBlitzTimeMs(30_000)
@@ -248,71 +261,109 @@ export default function GameSessionPage({ params }: { params: Promise<{ sessionI
         </div>
       </header>
 
-      <div className="p-4 md:p-8 max-w-4xl mx-auto">
+      <div className="p-3 md:p-6 max-w-4xl mx-auto">
         {/* Patient Card */}
-        <Card className="p-4 mb-4 border-0 shadow-sm">
-          <div className="flex items-start gap-3 mb-3">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-              <User className="w-5 h-5 text-primary" />
+        <Card className="p-3 mb-3 border-0 shadow-sm overflow-hidden">
+          {/* Header */}
+          <div className="flex items-center gap-2.5 mb-2">
+            <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+              <User className="w-4 h-4 text-primary" />
             </div>
-            <div>
-              <h3 className="font-semibold text-foreground">
+            <div className="min-w-0 flex-1">
+              <h3 className="font-semibold text-foreground leading-tight text-sm mb-1">
                 {currentCase.patient_persona.age}yo {currentCase.patient_persona.sex}
               </h3>
-              <p className="text-sm text-muted-foreground">{currentCase.patient_persona.chief_complaint}</p>
-            </div>
-          </div>
-
-          <p className="text-xs text-muted-foreground mb-3">
-            <span className="font-medium">History:</span> {currentCase.patient_persona.history}
-          </p>
-
-          {/* Vitals */}
-          <div className="flex flex-wrap gap-2 mb-3">
-            {[
-              { label: "BP", value: currentCase.vitals.bp },
-              { label: "HR", value: `${currentCase.vitals.hr} bpm` },
-              { label: "Temp", value: currentCase.vitals.temp },
-              { label: "RR", value: `${currentCase.vitals.rr}/min` },
-              { label: "SpO2", value: `${currentCase.vitals.spo2}%` },
-            ].map((v) => (
-              <div key={v.label} className="flex items-center gap-1.5 px-2.5 py-1.5 bg-muted rounded-lg">
-                <Activity className="w-3 h-3 text-muted-foreground" />
-                <span className="text-xs font-medium">{v.label}: {v.value}</span>
+              <div className="flex flex-wrap gap-1">
+                {(currentCase.physicalExamination?.vitals ?? []).map((vital) => {
+                  const [label, value] = Object.entries(vital)[0]
+                  const key = label.toLowerCase()
+                  const labelColor =
+                    key.includes("blood pressure") || key.includes("bp") ? "text-rose-500" :
+                    key.includes("pulse") || key.includes("hr") || key.includes("heart") ? "text-pink-500" :
+                    key.includes("temp") ? "text-amber-500" :
+                    key.includes("respiratory") || key.includes("rr") ? "text-blue-500" :
+                    key.includes("spo2") || key.includes("oxygen") || key.includes("o2") ? "text-teal-500" :
+                    "text-muted-foreground"
+                  return (
+                    <div key={label} className="flex items-center gap-1 px-2 py-0.5 bg-muted/70 rounded-md">
+                      <span className={`text-[10px] font-medium ${labelColor}`}>{label}:</span>
+                      <span className="text-[10px] font-semibold text-foreground">{value}</span>
+                    </div>
+                  )
+                })}
               </div>
-            ))}
-          </div>
-
-          {/* Symptoms */}
-          <div className="mb-3">
-            <p className="text-xs font-medium text-muted-foreground mb-1.5">Symptoms</p>
-            <div className="flex flex-wrap gap-1.5">
-              {currentCase.symptoms.map((s) => (
-                <span key={s} className="text-xs px-2 py-1 bg-secondary rounded-md text-secondary-foreground">{s}</span>
-              ))}
             </div>
           </div>
 
-          {/* Labs */}
+          {/* History pill */}
+          <div className="bg-muted/60 rounded-lg px-2.5 py-1.5 mb-2">
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              <span className="font-semibold text-foreground">PMH: </span>
+              {currentCase.patient_persona.history}
+            </p>
+          </div>
+
+          {/* Physical exam preview + expand */}
+          <button
+            onClick={() => setExamModalOpen(true)}
+            className="w-full text-left bg-muted/60 rounded-lg px-2.5 py-1.5 mb-2 group hover:bg-muted transition-colors"
+          >
+            <div className="flex items-center justify-between mb-0.5">
+              <span className="text-[10px] font-semibold text-primary flex items-center gap-1">
+                <Stethoscope className="w-3 h-3" /> Physical Examination Report
+              </span>
+              <span className="text-[10px] text-muted-foreground group-hover:text-foreground transition-colors">
+                View full exam →
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground leading-snug line-clamp-2">
+              {(currentCase.physicalExamination?.findings ?? []).find(
+                (f) => Object.keys(f)[0].toLowerCase() === "general"
+              ) && Object.values(
+                (currentCase.physicalExamination?.findings ?? []).find(
+                  (f) => Object.keys(f)[0].toLowerCase() === "general"
+                )!
+              )[0]}
+            </p>
+          </button>
+
+          {/* Labs button (only if present) */}
           {currentCase.labs && currentCase.labs.length > 0 && (
-            <div className="mb-3">
-              <p className="text-xs font-medium text-muted-foreground mb-1.5">Key Findings</p>
-              <div className="space-y-1">
-                {currentCase.labs.map((lab) => (
-                  <p key={lab} className="text-xs font-mono bg-muted/50 px-2 py-1 rounded">{lab}</p>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Imaging */}
-          {currentCase.imaging_text && (
-            <div>
-              <p className="text-xs font-medium text-muted-foreground mb-1.5">Imaging</p>
-              <p className="text-xs bg-muted/50 px-2 py-1.5 rounded">{currentCase.imaging_text}</p>
-            </div>
+            <Button variant="outline" size="sm" className="w-full gap-1.5 text-xs h-7" disabled>
+              <FlaskConical className="w-3 h-3" />
+              Labs
+            </Button>
           )}
         </Card>
+
+        {/* Physical Exam Modal */}
+        <Dialog open={examModalOpen} onOpenChange={setExamModalOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Stethoscope className="w-4 h-4 text-primary" />
+                Physical Examination
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-3 mt-2">
+              {(currentCase.physicalExamination?.findings ?? []).map((finding) => {
+                const [label, value] = Object.entries(finding)[0]
+                return (
+                  <div key={label} className="rounded-lg bg-muted/50 px-3 py-2.5">
+                    <p className="text-xs font-semibold text-primary mb-0.5">{label}</p>
+                    <p className="text-sm text-foreground leading-snug">{value}</p>
+                  </div>
+                )
+              })}
+              {currentCase.imaging_text && (
+                <div className="rounded-lg bg-muted/50 px-3 py-2.5">
+                  <p className="text-xs font-semibold text-primary mb-0.5">Imaging</p>
+                  <p className="text-sm text-foreground leading-snug">{currentCase.imaging_text}</p>
+                </div>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Question */}
         <div className="mb-4">

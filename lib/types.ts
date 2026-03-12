@@ -43,14 +43,7 @@ export interface Case {
     chief_complaint: string
     history: string
   }
-  symptoms: string[]
-  vitals: {
-    bp: string
-    hr: number
-    temp: string
-    rr: number
-    spo2: number
-  }
+  physicalExamination: CasesJsonPhysicalExam
   labs?: string[]
   imaging_text?: string
   question_text: string

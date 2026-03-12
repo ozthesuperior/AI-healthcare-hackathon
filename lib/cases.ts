@@ -22,21 +22,9 @@ function getMapFromEntries(entries: Array<Record<string, string | undefined>>): 
   return result
 }
 
-function parseNumber(value: string | undefined, fallback: number): number {
-  if (!value) return fallback
-  const parsed = Number.parseFloat(value.replace(/[^\d.]/g, ""))
-  return Number.isFinite(parsed) ? parsed : fallback
-}
 
 function toCase(raw: CasesJsonCase): Case {
-  const vitalMap = getMapFromEntries(raw.physicalExamination.vitals ?? [])
   const findingMap = getMapFromEntries(raw.physicalExamination.findings ?? [])
-  const symptomsText = findingMap["symptoms"] ?? ""
-  const symptoms = symptomsText
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean)
-
   const chiefComplaint =
     findingMap["general"] ?? `Patient with ${raw.pastMedicalHistory[0] ?? "medical concerns"}`
 
@@ -50,14 +38,7 @@ function toCase(raw: CasesJsonCase): Case {
       chief_complaint: chiefComplaint,
       history: raw.pastMedicalHistory.join(", "),
     },
-    symptoms,
-    vitals: {
-      bp: vitalMap["blood pressure"] ?? "N/A",
-      hr: parseNumber(vitalMap["pulse"], 0),
-      temp: vitalMap["temperature"] ?? "N/A",
-      rr: parseNumber(vitalMap["respiratory rate"], 0),
-      spo2: parseNumber(vitalMap["spo2"], 0),
-    },
+    physicalExamination: raw.physicalExamination,
     question_text: "What is the most likely diagnosis?",
     answer_format: "mcq",
     options: raw.diagnosisOptions,

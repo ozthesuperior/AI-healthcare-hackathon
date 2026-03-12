@@ -14,36 +14,27 @@
     "correctOption": 0,
     "pastMedicalHistory": [
       "COPD on home O2 4L/min",
-      "hypertension",
-      "type 2 diabetes",
+      "Hypertension",
+      "Type 2 diabetes",
       "GERD",
-      "depression"
+      "Depression"
     ],
     "physicalExamination": {
       "vitals": [
-        {
-          "Temperature": "98.2°F"
-        },
-        {
-          "Blood pressure": "139/72"
-        },
-        {
-          "Pulse": "84"
-        },
-        {
-          "Respiratory rate": "22"
-        },
-        {
-          "SpO2": "95"
-        }
+        { "Temperature": "98.2°F" },
+        { "Blood pressure": "139/72" },
+        { "Pulse": "84" },
+        { "Respiratory rate": "22" },
+        { "SpO2": "88% on 4L NC" }
       ],
       "findings": [
-        {
-          "General": "Worsening shortness of breath"
-        },
-        {
-          "Symptoms": "Dyspnea, Expiratory wheeze, Trace pedal edema, Increased sputum production"
-        }
+        { "General": "Mild distress, sitting upright, using accessory muscles" },
+        { "HEENT": "Mild perioral cyanosis; pupils equal, round, and reactive to light; no lymphadenopathy" },
+        { "Cardiovascular": "S1 and S2 present, regular rate and rhythm; no murmurs, rubs, or gallops" },
+        { "Pulmonary": "Diffuse expiratory wheezing bilaterally; prolonged expiratory phase; decreased air entry at bilateral bases" },
+        { "Abdomen": "Soft, nontender, nondistended; positive bowel sounds" },
+        { "Extremities": "Trace pitting edema to bilateral ankles; no clubbing or cyanosis" },
+        { "Neurologic": "Alert and oriented x3; no focal deficits" }
       ]
     }
   },
@@ -62,35 +53,26 @@
     "correctOption": 0,
     "pastMedicalHistory": [
       "Hypertension",
-      "type 2 diabetes",
+      "Type 2 diabetes",
       "30 pack-year smoking history",
-      "hyperlipidemia"
+      "Hyperlipidemia"
     ],
     "physicalExamination": {
       "vitals": [
-        {
-          "Temperature": "37.2°C"
-        },
-        {
-          "Blood pressure": "158/95"
-        },
-        {
-          "Pulse": "110"
-        },
-        {
-          "Respiratory rate": "22"
-        },
-        {
-          "SpO2": "94"
-        }
+        { "Temperature": "37.2°C" },
+        { "Blood pressure": "158/95" },
+        { "Pulse": "110" },
+        { "Respiratory rate": "22" },
+        { "SpO2": "94% on room air" }
       ],
       "findings": [
-        {
-          "General": "Severe chest pain radiating to left arm"
-        },
-        {
-          "Symptoms": "Crushing chest pain, Diaphoresis, Nausea, Left arm radiation, Shortness of breath"
-        }
+        { "General": "Acute distress, diaphoretic, clutching chest" },
+        { "HEENT": "Normocephalic, atraumatic; pupils equal and reactive; no JVD appreciated at 45 degrees" },
+        { "Cardiovascular": "Tachycardic; S1 and S2 present; S4 gallop noted; no murmurs or rubs" },
+        { "Pulmonary": "Mild bibasilar crackles; no wheezing" },
+        { "Abdomen": "Soft, nontender, nondistended; positive bowel sounds" },
+        { "Extremities": "Cool and clammy; no peripheral edema; pulses 2+ throughout" },
+        { "Neurologic": "Alert and oriented x3; anxious but no focal neurologic deficits" }
       ]
     }
   },
@@ -109,33 +91,24 @@
     "correctOption": 0,
     "pastMedicalHistory": [
       "No significant past medical history",
-      "no medications"
+      "No current medications"
     ],
     "physicalExamination": {
       "vitals": [
-        {
-          "Temperature": "36.1°C"
-        },
-        {
-          "Blood pressure": "105/68"
-        },
-        {
-          "Pulse": "58"
-        },
-        {
-          "Respiratory rate": "14"
-        },
-        {
-          "SpO2": "99"
-        }
+        { "Temperature": "36.1°C" },
+        { "Blood pressure": "105/68" },
+        { "Pulse": "58" },
+        { "Respiratory rate": "14" },
+        { "SpO2": "99% on room air" }
       ],
       "findings": [
-        {
-          "General": "Fatigue and weight gain for 6 months"
-        },
-        {
-          "Symptoms": "Fatigue, Weight gain, Cold intolerance, Constipation, Dry skin, Hair loss, Bradycardia"
-        }
+        { "General": "Fatigued-appearing woman in no acute distress; affect flat and sluggish" },
+        { "HEENT": "Coarse, dry hair with diffuse thinning; periorbital puffiness; thyroid mildly enlarged and non-tender; no lymphadenopathy" },
+        { "Cardiovascular": "Bradycardic; S1 and S2 present; no murmurs, rubs, or gallops" },
+        { "Pulmonary": "Clear to auscultation bilaterally; no wheezing or crackles" },
+        { "Abdomen": "Soft, mildly distended; hypoactive bowel sounds; no tenderness" },
+        { "Extremities": "Dry, cool skin; non-pitting edema of bilateral lower extremities; delayed relaxation phase of deep tendon reflexes" },
+        { "Neurologic": "Alert and oriented x3; psychomotor slowing; no focal deficits" }
       ]
     }
   },
@@ -153,35 +126,26 @@
     ],
     "correctOption": 0,
     "pastMedicalHistory": [
-      "Smoker",
-      "occasional alcohol use",
-      "no prior headache history"
+      "Smoker (1 PPD x 20 years)",
+      "Occasional alcohol use",
+      "No prior headache history"
     ],
     "physicalExamination": {
       "vitals": [
-        {
-          "Temperature": "37.0°C"
-        },
-        {
-          "Blood pressure": "175/100"
-        },
-        {
-          "Pulse": "88"
-        },
-        {
-          "Respiratory rate": "18"
-        },
-        {
-          "SpO2": "98"
-        }
+        { "Temperature": "37.0°C" },
+        { "Blood pressure": "175/100" },
+        { "Pulse": "88" },
+        { "Respiratory rate": "18" },
+        { "SpO2": "98% on room air" }
       ],
       "findings": [
-        {
-          "General": "Sudden severe headache - worst of his life"
-        },
-        {
-          "Symptoms": "Thunderclap headache, Photophobia, Neck stiffness, Nausea and vomiting, Brief loss of consciousness at onset"
-        }
+        { "General": "Distressed male, lying still in a darkened room; vomited once in triage" },
+        { "HEENT": "Photophobia present; pupils equal and sluggishly reactive bilaterally; no papilledema on fundoscopy; nuchal rigidity present" },
+        { "Cardiovascular": "Regular rate and rhythm; S1 and S2 present; no murmurs" },
+        { "Pulmonary": "Clear to auscultation bilaterally" },
+        { "Abdomen": "Soft, nontender, nondistended; normoactive bowel sounds" },
+        { "Extremities": "No edema; pulses intact throughout" },
+        { "Neurologic": "GCS 14 (E4V4M6); Kernig's sign positive; Brudzinski's sign positive; no focal motor deficits" }
       ]
     }
   },
@@ -199,34 +163,25 @@
     ],
     "correctOption": 0,
     "pastMedicalHistory": [
-      "Type 1 diabetes mellitus",
-      "missed insulin doses for 3 days"
+      "Type 1 diabetes mellitus (diagnosed age 12)",
+      "Missed insulin doses for 3 days"
     ],
     "physicalExamination": {
       "vitals": [
-        {
-          "Temperature": "37.4°C"
-        },
-        {
-          "Blood pressure": "98/62"
-        },
-        {
-          "Pulse": "118"
-        },
-        {
-          "Respiratory rate": "28"
-        },
-        {
-          "SpO2": "97"
-        }
+        { "Temperature": "37.4°C" },
+        { "Blood pressure": "98/62" },
+        { "Pulse": "118" },
+        { "Respiratory rate": "28" },
+        { "SpO2": "97% on room air" }
       ],
       "findings": [
-        {
-          "General": "Vomiting, abdominal pain, and confusion for 2 days"
-        },
-        {
-          "Symptoms": "Nausea and vomiting, Diffuse abdominal pain, Polyuria, Polydipsia, Kussmaul respirations, Fruity breath odor, Altered mental status"
-        }
+        { "General": "Ill-appearing, lethargic young male; fruity odor on breath" },
+        { "HEENT": "Dry mucous membranes; sunken eyes; pupils equal and reactive; no lymphadenopathy" },
+        { "Cardiovascular": "Tachycardic; S1 and S2 present; no murmurs; capillary refill 3 seconds" },
+        { "Pulmonary": "Kussmaul respirations (deep, labored, rapid); clear to auscultation" },
+        { "Abdomen": "Diffuse mild tenderness to palpation; no guarding or rebound; hypoactive bowel sounds" },
+        { "Extremities": "Skin turgor decreased; cool peripheries; no edema" },
+        { "Neurologic": "Lethargic but arousable; oriented to person only; no focal deficits" }
       ]
     }
   }
