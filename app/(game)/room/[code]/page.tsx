@@ -364,7 +364,7 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
           )}
         </header>
 
-        <div className="grid grid-rows-2 md:grid-rows-1 md:grid-cols-2 gap-4 flex-1 min-h-0 mb-6">
+        <div className="grid grid-cols-1 grid-rows-2 gap-4 flex-1 min-h-0 mb-6">
           <Card className="p-3 border-0 shadow-sm flex flex-col min-h-0">
             <h2 className="text-sm font-semibold text-foreground mb-3">Leaderboard</h2>
             <div className="space-y-2 overflow-y-auto min-h-0 pr-1">
