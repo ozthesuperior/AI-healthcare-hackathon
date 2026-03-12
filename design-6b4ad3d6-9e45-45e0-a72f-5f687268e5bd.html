@@ -1,0 +1,602 @@
+<html lang="en" vid="0"><head vid="1">
+<meta charset="UTF-8" vid="2">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" vid="3">
+<title vid="4">RXArena - Medical Education Game</title>
+<style vid="5">
+  :root {
+    
+    --device-w: 402px;
+    --device-h: 874px;
+    --device-radius: 55px;
+    --safe-top: 54px;
+    --safe-bottom: 34px;
+    --padding-x: 20px;
+
+    
+    --bg-base: #000000;
+    --bg-surface: #141415;
+    --bg-surface-raised: #1C1C1E;
+    --bg-surface-floating: rgba(28, 28, 30, 0.75);
+    
+    --text-primary: #FFFFFF;
+    --text-secondary: rgba(255, 255, 255, 0.6);
+    --text-tertiary: rgba(255, 255, 255, 0.4);
+
+    
+    --accent-pink-start: #FF008A;
+    --accent-pink-end: #D600FF;
+    --accent-blue-start: #00E5FF;
+    --accent-blue-end: #007AFF;
+    --accent-green-start: #34C759;
+    --accent-green-end: #30D158;
+    --accent-red-start: #FF453A;
+    --accent-red-end: #FF3B30;
+    --accent-yellow-start: #FFD60A;
+    --accent-yellow-end: #FF9F0A;
+
+    
+    --radius-pill: 999px;
+    --radius-card: 28px;
+    --radius-sm: 12px;
+    --radius-inner: 8px;
+
+    
+    --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    --font-rounded: ui-rounded, "SF Pro Rounded", -apple-system, sans-serif;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background-color: #0A0A0A;
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    display: flex;
+    gap: 40px;
+    padding: 60px;
+    overflow-x: auto;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  
+  .device {
+    width: var(--device-w);
+    height: var(--device-h);
+    border-radius: var(--device-radius);
+    background-color: var(--bg-base);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 12px #1A1A1A, 0 20px 40px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dynamic-island {
+    position: absolute;
+    top: 11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 32px;
+    background: #000;
+    border-radius: 20px;
+    z-index: 100;
+  }
+
+  .screen-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: var(--safe-top) var(--padding-x) 120px var(--padding-x);
+    position: relative;
+    z-index: 10;
+    height: 100%;
+    overflow-y: hidden;
+  }
+
+  
+
+  
+  h1 { font-family: var(--font-rounded); font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+  h2 { font-family: var(--font-rounded); font-size: 22px; font-weight: 600; }
+  .label { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); }
+  .body-text { font-size: 16px; line-height: 1.5; color: var(--text-secondary); }
+  .number-stat { font-family: var(--font-rounded); font-size: 24px; font-weight: 700; }
+
+  
+  .btn {
+    border: none;
+    border-radius: var(--radius-pill);
+    padding: 16px 24px;
+    font-size: 17px;
+    font-weight: 700;
+    color: #FFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    box-shadow: inset 0 2px 0 rgba(255,255,255,0.2), inset 0 -2px 0 rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.3);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent);
+    border-radius: var(--radius-pill) var(--radius-pill) 0 0;
+  }
+
+  .btn-pink { background: linear-gradient(135deg, var(--accent-pink-start), var(--accent-pink-end)); box-shadow: inset 0 2px 0 rgba(255,255,255,0.3), 0 8px 20px rgba(255,0,138,0.3); }
+  .btn-blue { background: linear-gradient(135deg, var(--accent-blue-start), var(--accent-blue-end)); box-shadow: inset 0 2px 0 rgba(255,255,255,0.3), 0 8px 20px rgba(0,122,255,0.3); }
+  .btn-green { background: linear-gradient(135deg, var(--accent-green-start), var(--accent-green-end)); box-shadow: inset 0 2px 0 rgba(255,255,255,0.3), 0 8px 20px rgba(52,199,89,0.3); }
+  .btn-ghost { background: var(--bg-surface-raised); box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); color: var(--text-primary); }
+
+  .pill-dark {
+    background: #1A1A1C;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: var(--radius-pill);
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+  }
+
+  .pill-accent {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-pill);
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  
+  .card {
+    background: var(--bg-surface);
+    border-radius: var(--radius-card);
+    padding: 24px;
+    border: 1px solid rgba(255,255,255,0.03);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .card-elevated {
+    background: linear-gradient(180deg, var(--bg-surface-raised), var(--bg-surface));
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  
+  .bottom-nav {
+    position: absolute;
+    bottom: var(--safe-bottom);
+    left: var(--padding-x);
+    right: var(--padding-x);
+    height: 68px;
+    background: var(--bg-surface-floating);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-radius: var(--radius-pill);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 8px;
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    z-index: 50;
+  }
+
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-tertiary);
+    width: 60px;
+    cursor: pointer;
+  }
+
+  .nav-item svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+    transition: all 0.2s ease;
+  }
+
+  .nav-item.active {
+    color: var(--text-primary);
+  }
+  
+  .nav-item.active .icon-glow {
+    filter: drop-shadow(0 0 8px var(--accent-pink-start));
+    color: var(--accent-pink-start);
+  }
+  .nav-item.active-blue .icon-glow { filter: drop-shadow(0 0 8px var(--accent-blue-start)); color: var(--accent-blue-start); }
+  .nav-item.active-yellow .icon-glow { filter: drop-shadow(0 0 8px var(--accent-yellow-start)); color: var(--accent-yellow-start); }
+  .nav-item.active-green .icon-glow { filter: drop-shadow(0 0 8px var(--accent-green-start)); color: var(--accent-green-start); }
+
+
+  .nav-label { font-size: 10px; font-weight: 600; }
+
+  
+  .avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #333;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .avatar::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-green-start), var(--accent-blue-end), var(--accent-pink-start));
+    z-index: -1;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    padding: 3px;
+  }
+
+  
+  .grid-2x2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .tile {
+    border-radius: 20px;
+    padding: 20px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-weight: 700;
+    font-size: 16px;
+    color: #FFF;
+    box-shadow: inset 0 2px 0 rgba(255,255,255,0.2), 0 4px 12px rgba(0,0,0,0.2);
+    cursor: pointer;
+    min-height: 100px;
+    position: relative;
+    overflow: hidden;
+  }
+  .tile::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 40%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent);
+  }
+
+  .tile-red { background: linear-gradient(135deg, var(--accent-red-start), var(--accent-red-end)); }
+  .tile-blue { background: linear-gradient(135deg, var(--accent-blue-start), var(--accent-blue-end)); }
+  .tile-yellow { background: linear-gradient(135deg, var(--accent-yellow-start), var(--accent-yellow-end)); color: #000; box-shadow: inset 0 2px 0 rgba(255,255,255,0.5), 0 4px 12px rgba(0,0,0,0.2); }
+  .tile-green { background: linear-gradient(135deg, var(--accent-green-start), var(--accent-green-end)); }
+
+  
+  .flex-row { display: flex; align-items: center; gap: 8px; }
+  .flex-between { display: flex; align-items: center; justify-content: space-between; }
+  .mt-auto { margin-top: auto; }
+  .glow-text-green { color: var(--accent-green-start); text-shadow: 0 0 12px rgba(52,199,89,0.5); }
+  .glow-text-blue { color: var(--accent-blue-start); text-shadow: 0 0 12px rgba(0,229,255,0.5); }
+
+</style>
+</head>
+<body vid="6">
+
+
+<div class="device" vid="7">
+  <div class="dynamic-island" vid="8"></div>
+  <div class="screen-content" vid="9">
+    <div class="flex-between" style="margin-top: 20px; margin-bottom: 24px;" vid="10">
+      <h1 vid="11">Focus Mode</h1>
+      <div class="pill-dark" vid="12">Case 14/50</div>
+    </div>
+
+    <div class="card card-elevated" style="flex: 1; margin-bottom: 24px;" vid="13">
+      <div class="flex-row" style="flex-wrap: wrap;" vid="14">
+        <span class="pill-dark" vid="15">M, 34 yrs</span>
+        <span class="pill-dark" vid="16">#A-112</span>
+      </div>
+      
+      <p class="body-text" style="font-size: 18px; margin-top: 12px;" vid="17">
+        Patient presents to the ER with sudden onset, crushing substernal chest pain radiating to the left arm. Diaphoretic and short of breath. ECG reveals ST-segment elevation in leads V1-V4.
+      </p>
+
+      <div class="mt-auto" vid="18">
+        <div class="label" style="margin-bottom: 8px;" vid="19">Associated ICD Codes</div>
+        <div class="flex-row" vid="20">
+          <span class="pill-dark" style="color: var(--accent-blue-start);" vid="21">I21.0</span>
+          <span class="pill-dark" style="color: var(--accent-blue-start);" vid="22">Z82.49</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-row" style="gap: 12px;" vid="23">
+      <button class="btn btn-ghost" style="flex: 1;" vid="24">Skip</button>
+      <button class="btn btn-pink" style="flex: 2;" vid="25">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" vid="26"><path d="M21 2v6h-6M3 12a9 9 0 1 0 2.63-6.37L2 9" vid="27"></path></svg>
+        Flip Card
+      </button>
+    </div>
+  </div>
+
+  <div class="bottom-nav" vid="28">
+    <div class="nav-item active" vid="29"><svg class="icon-glow" viewBox="0 0 24 24" vid="30"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-2h2v2zm0-4h-2V7h2v6z" vid="31"></path></svg><span class="nav-label" vid="32">Focus</span></div>
+    <div class="nav-item" vid="33"><svg viewBox="0 0 24 24" vid="34"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V18h14v-1.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05.02.01.03.03.04.04 1.14.83 1.93 1.94 1.93 3.41V18h6v-1.5c0-2.33-4.67-3.5-7-3.5z" vid="35"></path></svg><span class="nav-label" vid="36">Compete</span></div>
+    <div class="nav-item" vid="37"><svg viewBox="0 0 24 24" vid="38"><path d="M11.5 2L5 13h5.5l-1 9L19 11h-5.5z" vid="39"></path></svg><span class="nav-label" vid="40">Blitz</span></div>
+    <div class="nav-item" vid="41"><svg viewBox="0 0 24 24" vid="42"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" vid="43"></path></svg><span class="nav-label" vid="44">Profile</span></div>
+  </div>
+</div>
+
+
+<div class="device" vid="45">
+  <div class="dynamic-island" vid="46"></div>
+  <div class="screen-content" vid="47">
+    <div class="flex-between" style="margin-top: 20px; margin-bottom: 24px;" vid="48">
+      <h1 vid="49">Focus Mode</h1>
+      <div class="pill-dark" vid="50">Case 14/50</div>
+    </div>
+
+    <div class="card card-elevated" style="flex: 1; margin-bottom: 24px; align-items: center; justify-content: center; text-align: center;" vid="51">
+      <h1 class="glow-text-blue" style="font-size: 42px; margin-bottom: 8px;" vid="52">STEMI</h1>
+      <h2 style="color: var(--text-secondary); font-size: 18px; margin-bottom: 20px;" vid="53">ST-Elevation Myocardial Infarction</h2>
+      
+      <span class="pill-dark" style="color: var(--accent-blue-start); margin-bottom: 32px;" vid="54">ICD: I21.0</span>
+      
+      <p class="body-text" style="text-align: left; background: var(--bg-base); padding: 16px; border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,0.05);" vid="55">
+        Anterior wall STEMI requires immediate reperfusion therapy (PCI or thrombolysis). The ECG findings in V1-V4 indicate occlusion of the Left Anterior Descending (LAD) artery.
+      </p>
+    </div>
+
+    <div class="flex-row" style="gap: 12px;" vid="56">
+      <button class="btn btn-ghost" style="flex: 1;" vid="57">Review Again</button>
+      <button class="btn btn-green" style="flex: 1;" vid="58">Got it</button>
+    </div>
+  </div>
+
+  <div class="bottom-nav" vid="59">
+    <div class="nav-item active" vid="60"><svg class="icon-glow" viewBox="0 0 24 24" vid="61"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-2h2v2zm0-4h-2V7h2v6z" vid="62"></path></svg><span class="nav-label" vid="63">Focus</span></div>
+    <div class="nav-item" vid="64"><svg viewBox="0 0 24 24" vid="65"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V18h14v-1.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05.02.01.03.03.04.04 1.14.83 1.93 1.94 1.93 3.41V18h6v-1.5c0-2.33-4.67-3.5-7-3.5z" vid="66"></path></svg><span class="nav-label" vid="67">Compete</span></div>
+    <div class="nav-item" vid="68"><svg viewBox="0 0 24 24" vid="69"><path d="M11.5 2L5 13h5.5l-1 9L19 11h-5.5z" vid="70"></path></svg><span class="nav-label" vid="71">Blitz</span></div>
+    <div class="nav-item" vid="72"><svg viewBox="0 0 24 24" vid="73"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" vid="74"></path></svg><span class="nav-label" vid="75">Profile</span></div>
+  </div>
+</div>
+
+
+<div class="device" vid="76">
+  <div class="dynamic-island" vid="77"></div>
+  <div class="screen-content" vid="78">
+    
+    
+    <div class="flex-between" style="margin-top: 16px; margin-bottom: 24px; background: rgba(28,28,30,0.8); padding: 12px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.05);" vid="79">
+      <div class="pill-dark" style="background: var(--bg-base);" vid="80">Q3/10</div>
+      
+      
+      <div style="width: 44px; height: 44px; border-radius: 50%; background: conic-gradient(var(--accent-pink-start) 75%, #333 0); display: flex; align-items: center; justify-content: center;" vid="81">
+        <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--bg-surface-raised); display: flex; align-items: center; justify-content: center; font-family: var(--font-rounded); font-weight: 700;" vid="82">
+          18
+        </div>
+      </div>
+
+      <div class="pill-dark" style="background: var(--bg-base); color: var(--accent-yellow-start);" vid="83">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" vid="84"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" vid="85"></path></svg>
+        1,240 pts
+      </div>
+    </div>
+
+    
+    <div class="card" style="padding: 20px; margin-bottom: 24px;" vid="86">
+      <p class="body-text" style="font-size: 17px; text-align: center; color: var(--text-primary);" vid="87">
+        45yo F presents with RUQ pain, fever, and jaundice. Ultrasound shows biliary dilation. What is the most likely diagnosis?
+      </p>
+    </div>
+
+    
+    <div class="grid-2x2 mt-auto" vid="88">
+      <div class="tile tile-red" vid="89">Acute Cholecystitis</div>
+      <div class="tile tile-blue" vid="90">Ascending Cholangitis</div>
+      <div class="tile tile-yellow" vid="91">Pancreatitis</div>
+      <div class="tile tile-green" vid="92">Hepatitis A</div>
+    </div>
+
+  </div>
+
+  <div class="bottom-nav" vid="93">
+    <div class="nav-item" vid="94"><svg viewBox="0 0 24 24" vid="95"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-2h2v2zm0-4h-2V7h2v6z" vid="96"></path></svg><span class="nav-label" vid="97">Focus</span></div>
+    <div class="nav-item active active-blue" vid="98"><svg class="icon-glow" viewBox="0 0 24 24" vid="99"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V18h14v-1.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05.02.01.03.03.04.04 1.14.83 1.93 1.94 1.93 3.41V18h6v-1.5c0-2.33-4.67-3.5-7-3.5z" vid="100"></path></svg><span class="nav-label" vid="101">Compete</span></div>
+    <div class="nav-item" vid="102"><svg viewBox="0 0 24 24" vid="103"><path d="M11.5 2L5 13h5.5l-1 9L19 11h-5.5z" vid="104"></path></svg><span class="nav-label" vid="105">Blitz</span></div>
+    <div class="nav-item" vid="106"><svg viewBox="0 0 24 24" vid="107"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" vid="108"></path></svg><span class="nav-label" vid="109">Profile</span></div>
+  </div>
+</div>
+
+
+<div class="device" vid="110">
+  <div class="dynamic-island" vid="111"></div>
+  <div class="screen-content" vid="112">
+    
+    <div style="text-align: center; margin-top: 40px; margin-bottom: 32px;" vid="113">
+      <h1 class="glow-text-green" style="font-size: 48px; margin-bottom: 8px;" vid="114">Correct!</h1>
+      <div class="pill-dark" style="color: var(--accent-blue-start);" vid="115">Ascending Cholangitis</div>
+    </div>
+
+    
+    <div class="card" style="padding: 16px; gap: 0;" vid="116">
+      <div class="label" style="padding-left: 8px; margin-bottom: 12px;" vid="117">Round 3 Leaderboard</div>
+      
+      
+      <div class="flex-between" style="padding: 12px 8px; border-bottom: 1px solid rgba(255,255,255,0.05);" vid="118">
+        <div class="flex-row" vid="119">
+          <div class="avatar" style="width: 36px; height: 36px; font-size: 14px;" vid="120">SJ</div>
+          <span style="font-weight: 600;" vid="121">Dr. Sarah J.</span>
+        </div>
+        <div class="flex-row" vid="122">
+          <span class="number-stat" style="font-size: 18px;" vid="123">2,150</span>
+          <span style="color: var(--accent-green-start);" vid="124">↑</span>
+        </div>
+      </div>
+
+      
+      <div class="flex-between" style="padding: 12px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(255,255,255,0.03); border-radius: 8px;" vid="125">
+        <div class="flex-row" vid="126">
+          <div class="avatar" style="width: 36px; height: 36px; font-size: 14px; background: #222;" vid="127">You</div>
+          <span style="font-weight: 600; color: var(--accent-yellow-start);" vid="128">You</span>
+        </div>
+        <div class="flex-row" vid="129">
+          <span class="number-stat" style="font-size: 18px;" vid="130">1,980</span>
+          <span style="color: var(--accent-green-start);" vid="131">↑</span>
+        </div>
+      </div>
+
+      
+      <div class="flex-between" style="padding: 12px 8px;" vid="132">
+        <div class="flex-row" vid="133">
+          <div class="avatar" style="width: 36px; height: 36px; font-size: 14px;" vid="134">MK</div>
+          <span style="font-weight: 600;" vid="135">MedKid99</span>
+        </div>
+        <div class="flex-row" vid="136">
+          <span class="number-stat" style="font-size: 18px;" vid="137">1,420</span>
+          <span style="color: var(--text-tertiary);" vid="138">-</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-blue mt-auto" vid="139">Next Round</button>
+
+  </div>
+
+  <div class="bottom-nav" vid="140">
+    <div class="nav-item" vid="141"><svg viewBox="0 0 24 24" vid="142"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-2h2v2zm0-4h-2V7h2v6z" vid="143"></path></svg><span class="nav-label" vid="144">Focus</span></div>
+    <div class="nav-item active active-blue" vid="145"><svg class="icon-glow" viewBox="0 0 24 24" vid="146"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V18h14v-1.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05.02.01.03.03.04.04 1.14.83 1.93 1.94 1.93 3.41V18h6v-1.5c0-2.33-4.67-3.5-7-3.5z" vid="147"></path></svg><span class="nav-label" vid="148">Compete</span></div>
+    <div class="nav-item" vid="149"><svg viewBox="0 0 24 24" vid="150"><path d="M11.5 2L5 13h5.5l-1 9L19 11h-5.5z" vid="151"></path></svg><span class="nav-label" vid="152">Blitz</span></div>
+    <div class="nav-item" vid="153"><svg viewBox="0 0 24 24" vid="154"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" vid="155"></path></svg><span class="nav-label" vid="156">Profile</span></div>
+  </div>
+</div>
+
+
+<div class="device" vid="157">
+  <div class="dynamic-island" vid="158"></div>
+  <div class="screen-content" vid="159">
+    
+    
+    <div style="margin-top: 16px; margin-bottom: 24px;" vid="160">
+      <div style="background: var(--bg-surface-raised); border-radius: var(--radius-pill); padding: 4px; display: flex; border: 1px solid rgba(255,255,255,0.05);" vid="161">
+        <div style="flex: 1; text-align: center; padding: 8px; font-size: 13px; font-weight: 600; color: var(--text-secondary);" vid="162">Easy</div>
+        <div style="flex: 1; text-align: center; padding: 8px; font-size: 13px; font-weight: 600; background: var(--bg-surface); border-radius: var(--radius-pill); box-shadow: 0 2px 8px rgba(0,0,0,0.5);" vid="163">Medium</div>
+        <div style="flex: 1; text-align: center; padding: 8px; font-size: 13px; font-weight: 600; color: var(--text-secondary);" vid="164">Hard</div>
+      </div>
+    </div>
+
+    
+    <div class="flex-between" style="margin-bottom: 16px;" vid="165">
+      <div class="pill-dark" style="color: var(--accent-yellow-start); border-color: rgba(255,214,10,0.3);" vid="166">🔥 12 Streak</div>
+    </div>
+    
+    <div style="height: 4px; background: #333; border-radius: 2px; margin-bottom: 32px; overflow: hidden;" vid="167">
+      <div style="height: 100%; width: 65%; background: linear-gradient(90deg, var(--accent-pink-start), var(--accent-yellow-start)); border-radius: 2px;" vid="168"></div>
+    </div>
+
+    
+    <div class="card card-elevated" style="margin-bottom: 32px; min-height: 180px; justify-content: center; align-items: center; text-align: center;" vid="169">
+      <h2 style="font-size: 28px; line-height: 1.3;" vid="170">"Machine-like" murmur in a neonate.</h2>
+    </div>
+
+    
+    <div class="grid-2x2 mt-auto" vid="171">
+      <div class="tile tile-blue" style="min-height: 80px; padding: 12px; font-size: 14px;" vid="172">ASD</div>
+      <div class="tile tile-pink" style="min-height: 80px; padding: 12px; font-size: 14px; background: linear-gradient(135deg, var(--accent-pink-start), var(--accent-pink-end));" vid="173">VSD</div>
+      <div class="tile tile-green" style="min-height: 80px; padding: 12px; font-size: 14px;" vid="174">PDA</div>
+      <div class="tile tile-yellow" style="min-height: 80px; padding: 12px; font-size: 14px;" vid="175">Tetralogy of Fallot</div>
+    </div>
+
+  </div>
+
+  <div class="bottom-nav" vid="176">
+    <div class="nav-item" vid="177"><svg viewBox="0 0 24 24" vid="178"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-2h2v2zm0-4h-2V7h2v6z" vid="179"></path></svg><span class="nav-label" vid="180">Focus</span></div>
+    <div class="nav-item" vid="181"><svg viewBox="0 0 24 24" vid="182"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V18h14v-1.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05.02.01.03.03.04.04 1.14.83 1.93 1.94 1.93 3.41V18h6v-1.5c0-2.33-4.67-3.5-7-3.5z" vid="183"></path></svg><span class="nav-label" vid="184">Compete</span></div>
+    <div class="nav-item active active-yellow" vid="185"><svg class="icon-glow" viewBox="0 0 24 24" vid="186"><path d="M11.5 2L5 13h5.5l-1 9L19 11h-5.5z" vid="187"></path></svg><span class="nav-label" vid="188">Blitz</span></div>
+    <div class="nav-item" vid="189"><svg viewBox="0 0 24 24" vid="190"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" vid="191"></path></svg><span class="nav-label" vid="192">Profile</span></div>
+  </div>
+</div>
+
+
+<div class="device" vid="193">
+  <div class="dynamic-island" vid="194"></div>
+  <div class="screen-content" style="padding-top: var(--safe-top); padding-bottom: 100px; overflow-y: auto;" vid="195">
+    
+    <h1 style="margin-top: 20px; margin-bottom: 24px;" vid="196">Profile</h1>
+
+    
+    <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 32px;" vid="197">
+      <div class="avatar" style="width: 96px; height: 96px; font-size: 32px; margin-bottom: 16px;" vid="198">SJ</div>
+      <h2 vid="199">Dr. Sarah Jenkins</h2>
+      <div class="pill-dark" style="margin-top: 8px; color: var(--accent-blue-start); border-color: rgba(0,229,255,0.3);" vid="200">Level 12 — Intern</div>
+    </div>
+
+    
+    <div class="grid-2x2" style="margin-bottom: 32px;" vid="201">
+      <div class="card" style="padding: 16px; align-items: center; gap: 4px;" vid="202">
+        <div class="number-stat" vid="203">1,402</div>
+        <div class="label" style="font-size: 11px;" vid="204">Total Cases</div>
+      </div>
+      <div class="card" style="padding: 16px; align-items: center; gap: 4px;" vid="205">
+        <div class="number-stat" style="color: var(--accent-green-start);" vid="206">68%</div>
+        <div class="label" style="font-size: 11px;" vid="207">Win Rate</div>
+      </div>
+      <div class="card" style="padding: 16px; align-items: center; gap: 4px;" vid="208">
+        <div class="number-stat" style="color: var(--accent-yellow-start);" vid="209">42</div>
+        <div class="label" style="font-size: 11px;" vid="210">Best Streak</div>
+      </div>
+      <div class="card" style="padding: 16px; align-items: center; gap: 4px;" vid="211">
+        <div class="number-stat" style="color: var(--accent-blue-start);" vid="212">850</div>
+        <div class="label" style="font-size: 11px;" vid="213">Avg Score</div>
+      </div>
+    </div>
+
+    
+    <div class="label" style="margin-bottom: 12px;" vid="214">Recent Sessions</div>
+    <div class="card" style="padding: 0; margin-bottom: 24px;" vid="215">
+      <div class="flex-between" style="padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05);" vid="216">
+        <div vid="217">
+          <div style="font-weight: 600;" vid="218">Blitz Mode - Hard</div>
+          <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;" vid="219">Today, 2:40 PM</div>
+        </div>
+        <div class="pill-accent" style="background: rgba(52,199,89,0.1); color: var(--accent-green-start);" vid="220">+240 XP</div>
+      </div>
+      <div class="flex-between" style="padding: 16px;" vid="221">
+        <div vid="222">
+          <div style="font-weight: 600;" vid="223">Focus - Cardiology</div>
+          <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;" vid="224">Yesterday</div>
+        </div>
+        <div class="pill-accent" style="background: rgba(255,255,255,0.05); color: var(--text-secondary);" vid="225">Completed</div>
+      </div>
+    </div>
+
+    <button class="btn btn-ghost" style="color: var(--accent-red-start);" vid="226">Reset Stats</button>
+
+  </div>
+
+  <div class="bottom-nav" vid="227">
+    <div class="nav-item" vid="228"><svg viewBox="0 0 24 24" vid="229"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-2h2v2zm0-4h-2V7h2v6z" vid="230"></path></svg><span class="nav-label" vid="231">Focus</span></div>
+    <div class="nav-item" vid="232"><svg viewBox="0 0 24 24" vid="233"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V18h14v-1.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05.02.01.03.03.04.04 1.14.83 1.93 1.94 1.93 3.41V18h6v-1.5c0-2.33-4.67-3.5-7-3.5z" vid="234"></path></svg><span class="nav-label" vid="235">Compete</span></div>
+    <div class="nav-item" vid="236"><svg viewBox="0 0 24 24" vid="237"><path d="M11.5 2L5 13h5.5l-1 9L19 11h-5.5z" vid="238"></path></svg><span class="nav-label" vid="239">Blitz</span></div>
+    <div class="nav-item active active-green" vid="240"><svg class="icon-glow" viewBox="0 0 24 24" vid="241"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" vid="242"></path></svg><span class="nav-label" vid="243">Profile</span></div>
+  </div>
+</div>
+
+
+</body></html>
