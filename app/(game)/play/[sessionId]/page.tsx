@@ -248,14 +248,14 @@ export default function GameSessionPage({
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-background/95 backdrop-blur border-b border-border p-4">
+      <header className="sticky top-0 z-10 bg-background/95 backdrop-blur border-b border-border py-2 px-3">
         <div className="flex items-center justify-between max-w-4xl mx-auto">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => router.push("/dashboard")}
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </Button>
 
           <div className="flex items-center gap-3">
@@ -265,7 +265,7 @@ export default function GameSessionPage({
 
             {isBlitz && (
               <div
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full ${
+                className={`flex items-center gap-1 px-2 py-1 rounded-full ${
                   blitzTimeMs <= 10_000
                     ? "bg-destructive/10 text-destructive"
                     : "bg-muted"
@@ -280,7 +280,7 @@ export default function GameSessionPage({
 
             {isCompetitive && timeRemainingMs !== null && (
               <div
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full ${
+                className={`flex items-center gap-1 px-2 py-1 rounded-full ${
                   timeRemainingMs <= 60_000
                     ? "bg-destructive/10 text-destructive"
                     : "bg-muted"
@@ -298,7 +298,7 @@ export default function GameSessionPage({
         </div>
 
         {/* Progress bar */}
-        <div className="max-w-4xl mx-auto mt-3">
+        <div className="max-w-4xl mx-auto mt-2">
           <div className="h-1 bg-muted rounded-full overflow-hidden">
             <div
               className="h-full bg-primary rounded-full transition-all duration-300"
