@@ -56,7 +56,6 @@ export async function POST(
   return NextResponse.json({
     sessionId: id,
     mode: session.mode,
-    difficulty: session.difficulty,
     score: session.score,
     totalCorrect: session.answers.filter((a) => a.is_correct).length,
     totalQuestions: session.case_ids.length,

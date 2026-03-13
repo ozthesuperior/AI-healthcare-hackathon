@@ -21,7 +21,6 @@ interface AnswerReview {
 interface ResultData {
   sessionId: string
   mode: string
-  difficulty: string
   score: number
   totalCorrect: number
   totalQuestions: number
@@ -45,7 +44,7 @@ export default function ResultsPage({ params }: { params: Promise<{ sessionId: s
     const statsRaw = localStorage.getItem("rxarena_stats")
     const stats = statsRaw ? JSON.parse(statsRaw) : { sessions: [], accuracyBySpecialty: {} }
     stats.sessions = [
-      { sessionId, mode: result.mode, difficulty: result.difficulty, score: result.score, accuracy: Math.round((result.totalCorrect / result.totalQuestions) * 100), completedAt: Date.now() },
+      { sessionId, mode: result.mode, score: result.score, accuracy: Math.round((result.totalCorrect / result.totalQuestions) * 100), completedAt: Date.now() },
       ...stats.sessions.slice(0, 19),
     ]
     localStorage.setItem("rxarena_stats", JSON.stringify(stats))
@@ -78,7 +77,7 @@ export default function ResultsPage({ params }: { params: Promise<{ sessionId: s
           <div className="text-center">
             <p className="text-sm opacity-75 mb-1">Total Score</p>
             <p className="text-5xl font-black mb-2">{data.score.toLocaleString()}</p>
-            <p className="text-sm opacity-75 capitalize">{data.mode} · {data.difficulty}</p>
+            <p className="text-sm opacity-75 capitalize">{data.mode}</p>
             {data.submittedToLeaderboard && (
               <p className="text-xs opacity-60 mt-2">Score submitted to weekly leaderboard</p>
             )}

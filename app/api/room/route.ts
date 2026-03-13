@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getGuestIdFromRequest } from "@/lib/identity"
 import { redis } from "@/lib/redis"
 import { createRoom } from "@/lib/room"
-import type { Difficulty, GameMode, Specialty } from "@/lib/types"
+import type { GameMode, Specialty } from "@/lib/types"
 
 export async function POST(req: NextRequest) {
   const guestId = getGuestIdFromRequest(req)
@@ -13,9 +13,8 @@ export async function POST(req: NextRequest) {
   const guest = JSON.parse(raw)
 
   const body = await req.json().catch(() => ({}))
-  const { mode, difficulty, specialty, questionCount, scoreboardVisible } = body as {
+  const { mode, specialty, questionCount, scoreboardVisible } = body as {
     mode?: Exclude<GameMode, "practice">
-    difficulty?: Difficulty
     specialty?: Specialty | "mixed"
     questionCount?: number
     scoreboardVisible?: boolean
@@ -24,16 +23,11 @@ export async function POST(req: NextRequest) {
   if (!mode || !["competitive", "blitz"].includes(mode)) {
     return NextResponse.json({ error: "Invalid mode" }, { status: 400 })
   }
-  if (!difficulty || !["easy", "standard", "hard"].includes(difficulty)) {
-    return NextResponse.json({ error: "Invalid difficulty" }, { status: 400 })
-  }
-
   const room = await createRoom({
     hostGuestId: guestId,
     hostDisplayName: guest.display_name,
     hostAvatarColor: guest.avatar_color,
     mode,
-    difficulty,
     specialty: specialty ?? "mixed",
     questionCount: questionCount ?? 5,
     scoreboardVisible: scoreboardVisible ?? true,

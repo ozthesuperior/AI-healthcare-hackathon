@@ -275,7 +275,7 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
           <h1 className="text-2xl font-bold text-foreground">Game Lobby</h1>
           {room && (
             <p className="text-sm text-muted-foreground mt-1 capitalize">
-              {room.mode} · {room.difficulty} · {room.specialty === "mixed" ? "Mixed" : room.specialty} · {room.question_count}Q
+              {room.mode} · {room.specialty === "mixed" ? "Mixed" : room.specialty} · {room.question_count}Q
             </p>
           )}
         </header>

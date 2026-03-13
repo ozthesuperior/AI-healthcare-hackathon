@@ -9,7 +9,6 @@ import type {
   AnswerRecord,
   RoomScore,
   RoomResult,
-  Difficulty,
   Specialty,
   GameMode,
 } from "@/lib/types"
@@ -63,7 +62,6 @@ export async function createRoom(opts: {
   hostDisplayName: string
   hostAvatarColor: string
   mode: Exclude<GameMode, "practice">
-  difficulty: Difficulty
   specialty: Specialty | "mixed"
   questionCount: number
   scoreboardVisible: boolean
@@ -80,7 +78,6 @@ export async function createRoom(opts: {
     host_guest_id: opts.hostGuestId,
     join_code: joinCode,
     mode: opts.mode,
-    difficulty: opts.difficulty,
     specialty: opts.specialty as Specialty,
     question_count: Math.min(opts.questionCount, 10),
     status: "lobby",
@@ -219,7 +216,6 @@ export async function startGame(joinCode: string, hostGuestId: string): Promise<
 
   // Select cases
   const cases = getCases({
-    difficulty: room.difficulty,
     specialty: room.specialty === "mixed" ? undefined : room.specialty,
     count: room.question_count,
   })
@@ -284,7 +280,7 @@ export async function startGame(joinCode: string, hostGuestId: string): Promise<
       payload: { index: 0, case_data: safeCase, timer_end: timerEnd },
     })
 
-    scheduleBlitzAdvancement(room.id, 0, caseIds, room.difficulty, actualQuestionCount)
+    scheduleBlitzAdvancement(room.id, 0, caseIds, actualQuestionCount)
   }
 
   return room
@@ -337,7 +333,7 @@ export async function submitRoomAnswer(
   }
 
   const isCorrect = submittedAnswer === c.correct_answer
-  const scoreAwarded = calcScore(room.difficulty, responseTimeMs, isCorrect)
+  const scoreAwarded = calcScore(responseTimeMs, isCorrect)
 
   const record: AnswerRecord = { answer: submittedAnswer, time_ms: responseTimeMs, score: scoreAwarded, is_correct: isCorrect }
   await redis.hset(answerKey, guestId, JSON.stringify(record))
@@ -380,7 +376,7 @@ export async function submitRoomAnswer(
   const players = await getRoomPlayers(room.id)
   const answered = await redis.hlen(answerKey)
   if (answered >= players.length) {
-    await advanceBlitzQuestion(room.id, questionIndex, caseIds, room.difficulty, caseIds.length)
+    await advanceBlitzQuestion(room.id, questionIndex, caseIds, caseIds.length)
   }
 
   return { isCorrect, scoreAwarded }
@@ -404,7 +400,6 @@ function scheduleBlitzAdvancement(
   roomId: string,
   questionIndex: number,
   caseIds: string[],
-  difficulty: Difficulty,
   totalQuestions: number
 ) {
   setTimeout(async () => {
@@ -414,7 +409,7 @@ function scheduleBlitzAdvancement(
     const currentQ = Number(await redis.hget(rk(roomId).state, "current_question"))
     if (currentQ !== questionIndex) return // already advanced
 
-    await advanceBlitzQuestion(roomId, questionIndex, caseIds, difficulty, totalQuestions)
+    await advanceBlitzQuestion(roomId, questionIndex, caseIds, totalQuestions)
   }, BLITZ_PER_QUESTION_SECONDS * 1000 + 500) // +500ms grace
 }
 
@@ -422,7 +417,6 @@ async function advanceBlitzQuestion(
   roomId: string,
   questionIndex: number,
   caseIds: string[],
-  difficulty: Difficulty,
   totalQuestions: number
 ) {
   const keys = rk(roomId)
@@ -465,7 +459,7 @@ async function advanceBlitzQuestion(
     payload: { index: nextIndex, case_data: safeCase, timer_end: timerEnd },
   })
 
-  scheduleBlitzAdvancement(roomId, nextIndex, caseIds, difficulty, totalQuestions)
+  scheduleBlitzAdvancement(roomId, nextIndex, caseIds, totalQuestions)
 }
 
 // ------------------------------------------------------------------
@@ -544,7 +538,6 @@ async function endMatch(roomId: string, finalScores: RoomScore[]) {
     room_id: roomId,
     join_code: room.join_code,
     mode: room.mode,
-    difficulty: room.difficulty,
     specialty: room.specialty,
     final_rankings: finalScores,
     completed_at: now,

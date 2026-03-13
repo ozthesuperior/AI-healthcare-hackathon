@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from "uuid"
 import { redis } from "@/lib/redis"
 import { getCases, getCaseById } from "@/lib/cases"
 import { calcScore } from "@/lib/scoring"
-import type { Difficulty, GameMode, SoloSession, SessionAnswer, Specialty } from "@/lib/types"
+import type { GameMode, SoloSession, SessionAnswer, Specialty } from "@/lib/types"
 
 const SESSION_TTL_SECONDS = 60 * 60 // 1 hour
 
@@ -10,12 +10,10 @@ export async function createSession(opts: {
   guestId: string
   displayName: string
   mode: GameMode
-  difficulty: Difficulty
   specialty: Specialty | "mixed"
 }): Promise<SoloSession> {
   const id = uuidv4()
   const cases = getCases({
-    difficulty: opts.difficulty,
     specialty: opts.specialty === "mixed" ? undefined : opts.specialty,
     count: opts.mode === "practice" ? 10 : 5,
   })
@@ -28,7 +26,6 @@ export async function createSession(opts: {
     guest_id: opts.guestId,
     display_name: opts.displayName,
     mode: opts.mode,
-    difficulty: opts.difficulty,
     specialty: opts.specialty as Specialty,
     case_ids: cases.map((c) => c.id),
     current_index: 0,
@@ -69,7 +66,7 @@ export async function submitAnswer(
   if (!c) return null
 
   const isCorrect = submittedAnswer === c.correct_answer
-  const scoreAwarded = calcScore(session.difficulty, responseTimeMs, isCorrect)
+  const scoreAwarded = calcScore(responseTimeMs, isCorrect)
 
   const answer: SessionAnswer = {
     case_id: caseId,

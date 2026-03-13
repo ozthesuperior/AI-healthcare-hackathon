@@ -15,7 +15,6 @@ interface Identity {
 interface SessionRecord {
   sessionId: string
   mode: string
-  difficulty: string
   score: number
   accuracy: number
   completedAt: number
@@ -146,7 +145,7 @@ export default function ProfilePage() {
               <Card key={sess.sessionId} className="p-3 border-0 shadow-sm">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-foreground capitalize">{sess.mode} · {sess.difficulty}</p>
+                    <p className="text-sm font-medium text-foreground capitalize">{sess.mode}</p>
                     <p className="text-xs text-muted-foreground">{sess.accuracy}% accuracy · {timeAgo(sess.completedAt)}</p>
                   </div>
                   <span className="font-bold text-foreground text-sm">{sess.score.toLocaleString()} pts</span>

@@ -55,7 +55,7 @@ export default async function RoomResultsPage({
       <header className="mb-6">
         <h1 className="text-2xl font-bold text-foreground">Room Results</h1>
         <p className="text-sm text-muted-foreground mt-1 capitalize">
-          {result.mode} · {result.difficulty} · Room {joinCode}
+          {result.mode} · Room {joinCode}
         </p>
         <p className="text-xs text-muted-foreground mt-1">
           Expires {hoursLeft > 0 ? `in ${hoursLeft}h` : "soon"} ({expiresAt.toLocaleString()})

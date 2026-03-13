@@ -1,17 +1,9 @@
 import casesData from "@/data/cases.json"
-import type { Case, CasesJsonCase, Difficulty, Specialty } from "@/lib/types"
+import type { Case, CasesJsonCase, Specialty } from "@/lib/types"
 
 const rawCases = casesData as CasesJsonCase[]
 
-const DEFAULT_DIFFICULTY: Difficulty = "standard"
 const DEFAULT_SPECIALTY: Specialty = "emergency"
-
-function normalizeDifficulty(input?: CasesJsonCase["difficulty"]): Difficulty {
-  if (input === "easy" || input === "hard" || input === "standard") return input
-  // Incoming dataset uses "medium", which maps to app-level "standard".
-  if (input === "medium") return "standard"
-  return DEFAULT_DIFFICULTY
-}
 
 function normalizeSpecialty(input?: Specialty | string): Specialty {
   if (!input) return DEFAULT_SPECIALTY
@@ -66,7 +58,6 @@ function toCase(raw: CasesJsonCase): Case {
 
   return {
     id: raw.caseId,
-    difficulty: normalizeDifficulty(raw.difficulty),
     specialty: normalizeSpecialty(raw.specialty ?? raw.medicalField),
     patient_persona: {
       age: raw.age,
@@ -90,23 +81,12 @@ function toCase(raw: CasesJsonCase): Case {
 }
 
 const allCases = rawCases.map(toCase)
-const hasDifficultyMetadata = rawCases.some((c) => c.difficulty !== undefined)
 
 export function getCases(opts: {
-  difficulty?: Difficulty
   specialty?: Specialty | "mixed"
   count: number
 }): Case[] {
   let pool = allCases
-
-  // Only apply filters when source metadata exists and keep a safe fallback
-  // when a filter would result in an empty pool.
-  if (opts.difficulty && hasDifficultyMetadata) {
-    const byDifficulty = pool.filter((c) => c.difficulty === opts.difficulty)
-    if (byDifficulty.length > 0) {
-      pool = byDifficulty
-    }
-  }
 
   if (opts.specialty && opts.specialty !== "mixed") {
     const bySpecialty = pool.filter((c) => c.specialty === opts.specialty)

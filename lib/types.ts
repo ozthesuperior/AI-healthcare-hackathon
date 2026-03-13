@@ -1,6 +1,4 @@
-export type Difficulty = "easy" | "standard" | "hard"
 export type GameMode = "practice" | "competitive" | "blitz"
-export type CasesJsonDifficulty = Difficulty | "medium"
 export type Specialty =
   | "cardiology"
   | "neurology"
@@ -36,7 +34,6 @@ export interface CasesJsonCase {
   pastMedicalHistory: string[]
   physicalExamination: CasesJsonPhysicalExam
   // Optional fields for future enrichment
-  difficulty?: CasesJsonDifficulty
   specialty?: Specialty
 }
 
@@ -55,7 +52,6 @@ export interface CasePatientPersona {
 
 export interface Case {
   id: string
-  difficulty: Difficulty
   specialty: Specialty
   patient_persona: CasePatientPersona
   physicalExamination: CasesJsonPhysicalExam
@@ -83,7 +79,6 @@ export interface Room {
   host_guest_id: string
   join_code: string
   mode: Exclude<GameMode, "practice">
-  difficulty: Difficulty
   specialty: Specialty
   question_count: number
   status: "lobby" | "in_progress" | "completed" | "cancelled"
@@ -119,7 +114,6 @@ export interface RoomResult {
   room_id: string
   join_code: string
   mode: string
-  difficulty: string
   specialty: string
   final_rankings: RoomScore[]
   completed_at: number
@@ -131,7 +125,6 @@ export interface SoloSession {
   guest_id: string
   display_name: string
   mode: GameMode
-  difficulty: Difficulty
   specialty: Specialty
   case_ids: string[]
   current_index: number

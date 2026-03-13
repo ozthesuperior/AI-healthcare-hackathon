@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Swords, Zap } from "lucide-react"
-import type { Difficulty, GameMode, Specialty } from "@/lib/types"
+import type { GameMode, Specialty } from "@/lib/types"
 
 const SPECIALTIES: { id: Specialty | "mixed"; label: string }[] = [
   { id: "mixed", label: "Mixed (all)" },
@@ -23,7 +23,6 @@ const SPECIALTIES: { id: Specialty | "mixed"; label: string }[] = [
 export default function CreateRoomPage() {
   const router = useRouter()
   const [mode, setMode] = useState<Exclude<GameMode, "practice">>("competitive")
-  const [difficulty, setDifficulty] = useState<Difficulty>("standard")
   const [specialty, setSpecialty] = useState<Specialty | "mixed">("mixed")
   const [questionCount, setQuestionCount] = useState(5)
   const [scoreboardVisible, setScoreboardVisible] = useState(true)
@@ -37,7 +36,7 @@ export default function CreateRoomPage() {
       const res = await fetch("/api/room", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode, difficulty, specialty, questionCount, scoreboardVisible }),
+        body: JSON.stringify({ mode, specialty, questionCount, scoreboardVisible }),
       })
       if (!res.ok) {
         const data = await res.json()
@@ -109,16 +108,6 @@ export default function CreateRoomPage() {
                 </button>
               )
             })}
-          </div>
-        </Card>
-
-        {/* Difficulty */}
-        <Card className="p-4 border-0 shadow-sm">
-          <p className="text-sm font-medium text-foreground mb-3">Difficulty</p>
-          <div className="flex gap-2">
-            {optBtn(difficulty, "easy", "Easy (100 pts)", (v) => setDifficulty(v as Difficulty))}
-            {optBtn(difficulty, "standard", "Standard (200 pts)", (v) => setDifficulty(v as Difficulty))}
-            {optBtn(difficulty, "hard", "Hard (400 pts)", (v) => setDifficulty(v as Difficulty))}
           </div>
         </Card>
 

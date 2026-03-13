@@ -10,7 +10,6 @@ interface Stats {
   sessions: {
     sessionId: string
     mode: string
-    difficulty: string
     score: number
     accuracy: number
     completedAt: number
@@ -109,9 +108,9 @@ export default function DashboardPage() {
       {/* Mode quick-links */}
       <div className="grid grid-cols-3 gap-3 mb-6">
         {[
-          { label: "Practice", icon: BookOpen, href: "/play", color: "text-emerald-500 bg-emerald-500/10" },
-          { label: "Competitive", icon: Swords, href: "/play", color: "text-primary bg-primary/10" },
-          { label: "Blitz", icon: Zap, href: "/play", color: "text-amber-500 bg-amber-500/10" },
+          { label: "Practice", icon: BookOpen, href: "/play?mode=practice", color: "text-emerald-500 bg-emerald-500/10" },
+          { label: "Competitive", icon: Swords, href: "/play?mode=competitive", color: "text-primary bg-primary/10" },
+          { label: "Blitz", icon: Zap, href: "/play?mode=blitz", color: "text-amber-500 bg-amber-500/10" },
         ].map((item) => {
           const Icon = item.icon
           return (
@@ -143,7 +142,7 @@ export default function DashboardPage() {
               <Card key={`${sess.sessionId}-${sess.completedAt}-${index}`} className="p-4 border-0 shadow-sm">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-foreground text-sm capitalize">{sess.mode} · {sess.difficulty}</p>
+                    <p className="font-medium text-foreground text-sm capitalize">{sess.mode}</p>
                     <p className="text-xs text-muted-foreground">{sess.accuracy}% accuracy</p>
                   </div>
                   <div className="text-right">

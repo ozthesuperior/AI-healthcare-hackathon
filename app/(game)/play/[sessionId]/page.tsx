@@ -31,7 +31,6 @@ interface SessionData {
   sessionId: string;
   cases: SafeCase[];
   mode: string;
-  difficulty: string;
   specialty: string;
   timeLimitMs: number | null;
   startedAt: number;
