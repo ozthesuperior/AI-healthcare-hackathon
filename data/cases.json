@@ -18,59 +18,41 @@
       "Sevelamer 2400mg PO TID with meals",
       "Simvastatin 10mg PO daily",
       "Nephro-vite 1 capsule PO daily",
-      "Vitamin A [Numeric Identifier 961] units PO daily"
+      "Vitamin A [**Numeric Identifier 961**] units PO daily"
     ],
-    "medicalField": "vascular surgery",
+    "medicalField": "Vascular surgery",
     "pastMedicalHistory": [
-      "Atrial fibrillation, status post cardioversion, previously on coumadin for 6 months, currently not anticoagulated due to fall risk",
-      "Pericardial effusion, status post drainage, unclear etiology",
-      "End-stage renal disease from acute tubular necrosis in the setting of acute gastroenteritis, status post failed transplant"
+      "Atrial fibrillation status post cardioversion, previously on coumadin for 6 months, currently not anticoagulated due to fall risk",
+      "Pericardial effusion status post drainage, unclear etiology",
+      "End-stage renal disease from ATN in setting of acute gastroenteritis, status post failed transplant"
     ],
     "physicalExamination": {
       "vitals": [
-        {
-          "Temperature": "99.5 F"
-        },
-        {
-          "Heart Rate": "88 bpm"
-        },
-        {
-          "Blood Pressure": "96/62 mmHg"
-        },
-        {
-          "Respiratory Rate": "18 /min"
-        },
-        {
-          "Oxygen Saturation": "96% on room air"
-        }
+        { "Temperature": "99.5 F" },
+        { "Heart Rate": "88 bpm" },
+        { "Blood Pressure": "96/62 mmHg" },
+        { "Respiratory Rate": "18 /min" },
+        { "Oxygen Saturation": "96% on room air" }
       ],
       "findings": [
+        { "General": "NAD, alert and oriented x3" },
+        { "Lungs": "Decreased breath sounds bilaterally" },
+        { "Cardiovascular": "Irregularly irregular rhythm" },
+        { "Abdomen": "Soft, non-tender, non-distended" },
         {
-          "General": "No acute distress, alert and oriented x3"
+          "Extremities": "Right TMA site with 4 x 6 cm black eschar, no active purulent drainage, slight surrounding erythema"
         },
         {
-          "Lungs": "Decreased breath sounds bilaterally"
-        },
-        {
-          "Cardiovascular": "Irregularly irregular rhythm"
-        },
-        {
-          "Abdomen": "Soft, non-tender, non-distended"
-        },
-        {
-          "Extremities": "Right transmetatarsal amputation site with 4 x 6 cm black eschar, no active purulent drainage, slight surrounding erythema"
-        },
-        {
-          "Vascular": "1+ femoral pulses bilaterally; Dopplerable popliteal/posterior tibial/dorsalis pedis pulses bilaterally"
+          "Vascular": "1+ femoral pulses bilaterally, Dopplerable popliteal/tibial/dorsalis pedis signals bilaterally"
         }
       ]
     },
     "difficulty": "medium",
     "diagnosisOptions": [
       "Cellulitis",
-      "Deep vein thrombosis",
-      "GANGRENE RIGHT FOOT",
-      "Congestive heart failure exacerbation"
+      "Necrotizing fasciitis",
+      "Gangrene Right Foot",
+      "Venous stasis ulcer"
     ],
     "correctOption": 2
   },
@@ -94,13 +76,13 @@
       "Synthroid 50 mcg daily",
       "Lidocaine patch 5% topical daily",
       "Oxycodone 2.5 mg as needed",
-      "Potassium chloride 20 mEq daily",
+      "KCl 20 mEq daily",
       "Bacitracin ointment to chest",
       "Clotrimazole 1% to rectum"
     ],
-    "medicalField": "vascular surgery",
+    "medicalField": "Gastroenterology",
     "pastMedicalHistory": [
-      "Congestive heart failure",
+      "CHF",
       "History of bradycardia",
       "Atrial fibrillation on low-dose coumadin",
       "Critical aortic stenosis",
@@ -115,57 +97,35 @@
     ],
     "physicalExamination": {
       "vitals": [
-        {
-          "Temperature": "93.0 F"
-        },
-        {
-          "Pulse": "96 bpm"
-        },
-        {
-          "Blood Pressure": "102/42 mmHg"
-        },
-        {
-          "Respiratory Rate": "15/min"
-        },
-        {
-          "Oxygen Saturation": "98% on room air"
-        }
+        { "Temperature": "93.0 F" },
+        { "Pulse": "96 bpm" },
+        { "Blood Pressure": "102/42 mmHg" },
+        { "Respiratory Rate": "15/min" },
+        { "Oxygen Saturation": "98% on room air" }
       ],
       "findings": [
+        { "General": "Alert and oriented x3, no acute distress" },
         {
-          "General": "Alert and oriented x3, no acute distress"
+          "HEENT": "Oropharynx clear, extraocular movements intact, pupils equal round and reactive to light"
         },
-        {
-          "HEENT": "Oropharynx clear, EOMI, PERRL"
-        },
-        {
-          "Neck": "Supple, no lymphadenopathy"
-        },
+        { "Neck": "Supple, no lymphadenopathy" },
         {
           "Chest": "Crackles at bases; scrape on right side of chest with mild bleeding, no erythema or pus"
         },
-        {
-          "Cardiovascular": "Regular rate and rhythm, systolic murmur"
-        },
-        {
-          "Abdomen": "Soft, non-tender, non-distended, positive bowel sounds"
-        },
-        {
-          "Extremities": "Warm, well-perfused, no edema"
-        },
-        {
-          "Rectal": "Guaiac negative"
-        }
+        { "Cardiovascular": "Regular rate and rhythm, systolic murmur" },
+        { "Abdomen": "Soft, non-tender, non-distended, positive bowel sounds" },
+        { "Extremities": "Warm and well perfused, no edema" },
+        { "Rectal": "Guaiac negative per ED" }
       ]
     },
     "difficulty": "medium",
     "diagnosisOptions": [
-      "UPPER GASTROINTESTINAL BLEED",
-      "Acute appendicitis",
-      "Diabetic ketoacidosis",
-      "Pulmonary embolism"
+      "Lower gastrointestinal bleed",
+      "Upper Gastrointestinal Bleed",
+      "Acute cholecystitis",
+      "Diverticulitis"
     ],
-    "correctOption": 0
+    "correctOption": 1
   },
   {
     "age": 29,
@@ -181,43 +141,27 @@
       "Dextroamphetamine 10 mg daily",
       "Fluoxetine 40 mg daily"
     ],
-    "medicalField": "vascular surgery",
+    "medicalField": "Toxicology",
     "pastMedicalHistory": [
       "Depression",
-      "Prior suicide attempt (cutting behavior)",
+      "Prior suicide attempt with cutting behavior",
       "Myoclonic jerking"
     ],
     "physicalExamination": {
       "vitals": [
-        {
-          "Temperature": "96"
-        },
-        {
-          "Pulse": "59-84"
-        },
-        {
-          "Blood Pressure": "115-134/63-86"
-        },
-        {
-          "Respiratory Rate": "14-22"
-        },
-        {
-          "Pulse Oximetry": "99-100%"
-        }
+        { "Temperature": "96" },
+        { "Pulse": "59-84" },
+        { "Blood Pressure": "115-134/63-86" },
+        { "Respiratory Rate": "14-22" },
+        { "Pulse Oximetry": "99-100%" }
       ],
       "findings": [
-        {
-          "General": "Extubated, awake, blunted affect"
-        },
+        { "General": "Extubated, awake, blunted affect" },
         {
           "HEENT": "NC/AT, pupils 5 mm minimally reactive bilaterally, no nystagmus, sclera anicteric, moderately dry mucous membranes"
         },
-        {
-          "Neck": "Supple, no LAD"
-        },
-        {
-          "Lungs": "Clear to auscultation bilaterally, no wheezes, rales, or rhonchi"
-        },
+        { "Neck": "Supple, no LAD" },
+        { "Lungs": "CTAB, no wheezes, rales, or rhonchi" },
         {
           "Cardiovascular": "Regular rate and rhythm, normal S1 and S2, no murmurs, rubs, or gallops"
         },
@@ -234,12 +178,12 @@
     },
     "difficulty": "medium",
     "diagnosisOptions": [
-      "Acute ischemic stroke",
-      "Aortic dissection",
-      "Peripheral arterial disease",
-      "OVERDOSE"
+      "Serotonin syndrome",
+      "Overdose",
+      "Anticholinergic toxicity",
+      "Opioid overdose"
     ],
-    "correctOption": 3
+    "correctOption": 1
   },
   {
     "age": 69,
@@ -259,50 +203,389 @@
       "warfarin 1 tablet daily (strength unknown)",
       "allopurinol 300 mg daily",
       "simvastatin 40 mg daily",
-      "prednisone 5 mg orally as needed for gout; last dose 1 week ago"
+      "prednisone 5 mg orally as needed for gout"
     ],
-    "medicalField": "vascular surgery",
+    "medicalField": "Vascular surgery",
     "pastMedicalHistory": [
       "Hyperlipidemia",
       "Hypertension",
-      "Benign prostatic hyperplasia",
+      "BPH",
       "Right superior cerebellar artery stroke",
-      "Prostate cancer status post brachytherapy 5 years ago",
+      "Prostate cancer s/p brachytherapy 5 years ago",
       "Gout",
       "Atrial fibrillation",
-      "Status post lumbar laminectomy",
-      "Status post tonsillectomy"
+      "s/p lumbar laminectomy",
+      "s/p tonsillectomy"
     ],
     "physicalExamination": {
       "vitals": [
-        {
-          "Pulse": "58"
-        },
-        {
-          "Respiratory rate": "18"
-        },
-        {
-          "Oxygen saturation": "97%"
-        },
-        {
-          "Blood pressure": "206/72"
-        },
-        {
-          "Height": "6'1\""
-        },
-        {
-          "Weight": "220 lbs"
-        }
+        { "Pulse": "58 bpm" },
+        { "Respiratory rate": "18/min" },
+        { "O2 saturation": "97%" },
+        { "Blood pressure": "206/72 mmHg" },
+        { "Height": "6'1\"" },
+        { "Weight": "220 lbs" }
+      ],
+      "findings": []
+    },
+    "difficulty": "hard",
+    "diagnosisOptions": [
+      "Myocardial infarction",
+      "Pulmonary embolism",
+      "Acute ischemic stroke",
+      "Aortic Dissection"
+    ],
+    "correctOption": 3
+  },
+  {
+    "age": 62,
+    "gender": "M",
+    "caseId": "CASE_00007",
+    "subjectId": 65982,
+    "hadmId": 141119.0,
+    "medicationsAtHome": [],
+    "allergies": ["Augmentin"],
+    "socialHistory": "Social History:\nLives with: Wife-[**Name (NI) **], Occupation: Salesman, Tobacco: smokes\nhalf pack of cigarettes per day x 40yrs, quit 3 months ago,\nETOH: 3 drinks per week",
+    "pastSurgicalHistory": null,
+    "medicationsOnAdmission": [
+      "Metformin 500 mg PO BID",
+      "Metoprolol succinate 25 mg PO 2 tablets",
+      "Pravastatin 80 mg daily",
+      "Ranitidine 150 mg PO daily",
+      "Aspirin 81 mg PO daily"
+    ],
+    "medicalField": "Gastroenterology",
+    "pastMedicalHistory": [
+      "Noninsulin dependent diabetes mellitus",
+      "Hyperlipidemia",
+      "Obesity",
+      "Hypertension",
+      "Sleep apnea on CPAP at home",
+      "History of bladder cancer",
+      "Gastroesophageal reflux disease",
+      "Gout",
+      "Recurrent urinary tract infections"
+    ],
+    "physicalExamination": { "vitals": [], "findings": [] },
+    "difficulty": "medium",
+    "diagnosisOptions": [
+      "Acute appendicitis",
+      "Crohn disease",
+      "Nephrolithiasis",
+      "Sigmoid Diverticulitis, Colovestical Fistula/Sda"
+    ],
+    "correctOption": 3
+  },
+  {
+    "age": 85,
+    "gender": "M",
+    "caseId": "CASE_00008",
+    "subjectId": 69805,
+    "hadmId": 109255.0,
+    "medicationsAtHome": [],
+    "allergies": [],
+    "socialHistory": "Social History:\nRace: Caucasian\nLast Dental Exam: [**2183-5-17**], will schedule exam before surgery\nLives with: Son and daughter-in-law\nOccupation: Retired printer\nTobacco: Quit 40 years ago\nETOH: [**2-19**] glasses of wine/year",
+    "pastSurgicalHistory": null,
+    "medicationsOnAdmission": [
+      "Amiodarone 200 mg daily",
+      "Hydrochlorothiazide 25 mg daily",
+      "Lisinopril 40 mg daily",
+      "Lovastatin 20 mg daily",
+      "Terazosin 2 mg weekly",
+      "Multivitamin"
+    ],
+    "medicalField": "Cardiology",
+    "pastMedicalHistory": [
+      "Aortic stenosis",
+      "Aortic insufficiency",
+      "Status post aortic valve replacement (AVR)",
+      "Status post coronary artery bypass grafting (CABG)",
+      "Coronary artery disease",
+      "Hypertension",
+      "Paroxysmal atrial fibrillation",
+      "Benign prostatic hypertrophy",
+      "Chronic renal insufficiency (baseline creatinine 1.6)",
+      "Acute kidney injury this admission due to hypovolemia (creatinine rose to 3.0)",
+      "Past surgical history: inguinal hernia repair"
+    ],
+    "physicalExamination": {
+      "vitals": [
+        { "Pulse": "79" },
+        { "Respiratory rate": "18" },
+        { "Oxygen saturation": "100% on room air" },
+        { "Blood pressure right arm": "138/53" },
+        { "Blood pressure left arm": "131/50" },
+        { "Height": "5'8\"" },
+        { "Weight": "184 lbs" }
       ],
       "findings": []
     },
     "difficulty": "medium",
     "diagnosisOptions": [
-      "Benign paroxysmal positional vertigo",
-      "AORTIC DISSECTION",
-      "Parkinson disease",
-      "Subarachnoid hemorrhage"
+      "Aortic Stenosis\\Avr; ? Coronary Artery Bypass Graft /Sda",
+      "Chronic obstructive pulmonary disease",
+      "Diabetes mellitus type 2",
+      "Deep vein thrombosis"
     ],
-    "correctOption": 1
+    "correctOption": 0
+  },
+  {
+    "age": 46,
+    "gender": "M",
+    "caseId": "CASE_00009",
+    "subjectId": 41118,
+    "hadmId": 167641.0,
+    "medicationsAtHome": [],
+    "allergies": ["Morphine"],
+    "socialHistory": "Social History:\nNo tobacco, social etoh. No illicits. married with two kids.\nCurrently unemployed but works as an accountant. Lives in\n[**Location 3320**].",
+    "pastSurgicalHistory": null,
+    "medicationsOnAdmission": [
+      "Simvastatin 20mg qhs",
+      "Celexa 40mg daily",
+      "Dilaudid 1-2mg prn pain",
+      "Cefoxitin 1gm",
+      "Diphenhydramine 50mg IV",
+      "Acetaminophen suppository 650mg PR",
+      "Zofran 4mg IV"
+    ],
+    "medicalField": "Gastroenterology",
+    "pastMedicalHistory": [
+      "Hyperlipidemia",
+      "Anxiety",
+      "Kidney stones",
+      "Osteomyelitis",
+      "Borderline diabetes mellitus",
+      "Status post laparoscopic cholecystectomy with intraoperative fluoroscopic cholangiogram and repair of incarcerated umbilical hernia"
+    ],
+    "physicalExamination": {
+      "vitals": [
+        { "Temperature": "100.3 F" },
+        { "Blood Pressure": "141/66 mmHg" },
+        { "Pulse": "109 bpm" },
+        { "Respiratory Rate": "32/min, improved to 24/min" },
+        {
+          "Oxygen Saturation": "86% on 6L, improved to 95% on 3L nasal cannula"
+        }
+      ],
+      "findings": [
+        { "General": "Alert, oriented, no acute distress" },
+        {
+          "HEENT": "Sclera anicteric, mucous membranes moist, oropharynx clear"
+        },
+        { "Neck": "Supple, JVP not elevated, no lymphadenopathy" },
+        { "Lungs": "Bilateral crackles at bases" },
+        {
+          "Cardiovascular": "Regularly irregular rhythm, normal S1 and S2, no murmurs/rubs/gallops"
+        },
+        {
+          "Abdomen": "Tense, distended, tender right greater than left, bowel sounds present, no rebound tenderness or guarding, no organomegaly"
+        },
+        { "GU": "No Foley catheter" },
+        {
+          "Extremities": "Warm, well perfused, 2+ pulses, no clubbing, cyanosis, or edema"
+        }
+      ]
+    },
+    "difficulty": "hard",
+    "diagnosisOptions": [
+      "Acute appendicitis",
+      "Pulmonary embolism",
+      "Post Procedure Endoscopic Retrograde Cholangiopancreatography;? Sepsis",
+      "Acute myocardial infarction"
+    ],
+    "correctOption": 2
+  },
+  {
+    "age": 48,
+    "gender": "M",
+    "caseId": "CASE_00010",
+    "subjectId": 42232,
+    "hadmId": 138632.0,
+    "medicationsAtHome": [],
+    "allergies": ["Cogentin", "Trilafon"],
+    "socialHistory": "Social History:\nUsed to smoke 1 cigarette a month- quit 10 years ago, denies\nalcohol and illicit drug use, NH resident at [**Hospital 4542**] Rehab in\n[**Location (un) 38**] ([**Telephone/Fax (1) 105939**]).",
+    "pastSurgicalHistory": "Past Surgical History:\nLeft AV fistula placement ([**2154**]), L AV fistula angioplasty x 1\n([**2158**]), pilonidal cyst excision when a teenager",
+    "medicationsOnAdmission": [
+      "modafinil 100 mg PO daily",
+      "omeprazole 20 mg PO daily",
+      "aspirin 325 mg PO daily",
+      "Advair 100/50 1 puff",
+      "Fibra-Lax 625 mg PO BID",
+      "hydralazine 50 mg PO BID 3 times/week and TID 4 times/week",
+      "Renvela 2400 mg PO TID",
+      "calcium acetate 1334 mg PO TID",
+      "metoclopramide 5 mg PO QID",
+      "atenolol 100 mg PO daily",
+      "simvastatin 20 mg PO daily",
+      "amlodipine 10 mg PO daily (hold on dialysis days)",
+      "pregabalin 25 mg PO daily",
+      "Sensipar 60 mg PO daily",
+      "sertraline 200 mg PO daily",
+      "folic acid 0.8 mg PO daily",
+      "trazodone 100 mg PO at bedtime",
+      "risperidone 1.5 mg PO at bedtime",
+      "Tylenol",
+      "Lantus 25 units SQ daily",
+      "Milk of magnesia",
+      "bisacodyl",
+      "Fleet enema",
+      "magnesium citrate"
+    ],
+    "medicalField": "Nephrology",
+    "pastMedicalHistory": [
+      "ESRD due to diabetic nephropathy on hemodialysis three times weekly via left AV fistula",
+      "Type 2 diabetes mellitus",
+      "Hypertension",
+      "Hyperlipidemia",
+      "Schizophrenia",
+      "Foot ulcers"
+    ],
+    "physicalExamination": {
+      "vitals": [
+        { "Temperature": "96.3 F" },
+        { "Pulse": "58 bpm" },
+        { "Blood Pressure": "179/70 mmHg" },
+        { "Respiratory Rate": "16/min" },
+        { "Oxygen Saturation": "96% on room air" },
+        { "Fingerstick Glucose": "191 mg/dL" }
+      ],
+      "findings": [
+        { "General": "Alert, cooperative, oriented x3, no jaundice" },
+        {
+          "HEENT": "Normocephalic, atraumatic; ears and nose normal externally; moist oral mucosa"
+        },
+        {
+          "Cardiac": "Regular rate and rhythm, no murmurs/rubs/gallops, normal S1/S2, no JVD, no carotid bruit"
+        },
+        { "Lungs": "Clear to auscultation bilaterally" },
+        {
+          "Abdomen": "Bowel sounds present, soft, nontender, nondistended, obese"
+        },
+        {
+          "Extremities": "Warm, well-perfused, sensory and motor intact in all extremities, no pedal edema, pedal pulses equal and strong"
+        },
+        {
+          "Vascular Access": "Left forearm AV fistula with radial thrill and bruit present, no local erythema"
+        }
+      ]
+    },
+    "difficulty": "medium",
+    "diagnosisOptions": [
+      "Kidney Tx",
+      "Acute appendicitis",
+      "Community-acquired pneumonia",
+      "Pulmonary embolism"
+    ],
+    "correctOption": 0
+  },
+  {
+    "age": 56,
+    "gender": "M",
+    "caseId": "CASE_00013",
+    "subjectId": 88857,
+    "hadmId": 124316.0,
+    "medicationsAtHome": [],
+    "allergies": [],
+    "socialHistory": "Social History:\nPer past OMR notes:\nHe lives alone and has not worked for years secondary to\ndepression and anxiety. Previously in \"high-tech sales\" selling\n\"knowledge management\" consulting software; lost his job when\nunit closed down and has not been able to work since then. Is\nreceiving support from sister (pays his mortgage) and friends\nfor food and financial support.  Never smoked.  Reports multiple\nrecreational drugs including IVDU in the 60's but none since\nthen.  Past baseline of [**2-8**] pint per day of hard liquor, more\nrecently 1 to 1.5 pints of vodka.",
+    "pastSurgicalHistory": null,
+    "medicationsOnAdmission": [
+      "Folic acid 1 mg daily",
+      "Thiamine HCl 100 mg daily",
+      "Multivitamin daily",
+      "Venlafaxine 225 mg daily",
+      "Amlodipine 5 mg daily",
+      "Atenolol 25 mg daily",
+      "Gabapentin 600 mg every 8 hours",
+      "Concerta 90 mg daily"
+    ],
+    "medicalField": "Toxicology",
+    "pastMedicalHistory": [
+      "Alcohol use disorder/alcoholism",
+      "Depression",
+      "ADHD",
+      "History of melanoma excised from left back",
+      "Degenerative joint disease with possible need for left hip replacement",
+      "Chronic kidney disease per chart"
+    ],
+    "physicalExamination": {
+      "vitals": [
+        { "Heart rate": "87 bpm" },
+        { "Blood pressure": "158/91 mmHg" },
+        { "Respiratory rate": "23/min" },
+        { "Oxygen saturation": "94% on room air" }
+      ],
+      "findings": [
+        {
+          "General": "Friendly, tremulous, engages examiner easily, no apparent physical distress"
+        },
+        { "HEENT": "EOMI, moist mucous membranes, no scleral icterus" },
+        {
+          "Cardiovascular": "Regular rate and rhythm, no murmurs/rubs/gallops, normal S1/S2"
+        },
+        { "Pulmonary": "Good air movement, clear to auscultation bilaterally" },
+        {
+          "Abdomen": "Soft, non-distended, non-tender, no hepatosplenomegaly, no angiomas or caput medusae"
+        },
+        {
+          "Back": "No CVA tenderness; left upper back scar from prior melanoma excision; no rash"
+        },
+        { "Extremities": "No edema, warm and well perfused" },
+        {
+          "Neurologic": "Persistent tremor without distinct intention tremor; finger-to-nose intact; alternating hand flips accurate but limited at high speed; strength 4+/5 in all extremities limited by tremor; no clear asterixis"
+        },
+        {
+          "Psychiatric": "Engaged, full affect, worried and sad; denies suicidal ideation, homicidal ideation, or current hallucinations; not angry or anxious on exam"
+        }
+      ]
+    },
+    "difficulty": "medium",
+    "diagnosisOptions": [
+      "Etoh Withdrawal",
+      "Hepatic encephalopathy",
+      "Hyperthyroidism",
+      "Essential tremor"
+    ],
+    "correctOption": 0
+  },
+  {
+    "age": 82,
+    "gender": "M",
+    "caseId": "CASE_00014",
+    "subjectId": 41874,
+    "hadmId": 103760.0,
+    "medicationsAtHome": [],
+    "allergies": [],
+    "socialHistory": "Social History:\nETOH - hasn't in 20 years, used to have alcohol addiction\nproblem\nSmoking - used to smoke, quit over 30 yrs ago\nDrugs - none\nLives with wife in an [**Hospital3 **] facility",
+    "pastSurgicalHistory": null,
+    "medicationsOnAdmission": [
+      "Acetaminophen 325 mg PO, two tablets TID",
+      "Docusate sodium 100 mg PO BID"
+    ],
+    "medicalField": "Neurology",
+    "pastMedicalHistory": [
+      "Knee surgery",
+      "Mild dementia (previously on Aricept)",
+      "Spinal fusion (?lumbar)",
+      "Left scaphoid fracture",
+      "Hemochromatosis (treated with phlebotomy)",
+      "Esophageal cancer treated with radiation >25 years ago",
+      "Macular degeneration",
+      "Hearing loss (complete on right, ~70% on left)",
+      "Osteoarthritis in feet",
+      "Recent motor vehicle accidents with resultant C2-C5 spinous process fractures",
+      "Hypertension"
+    ],
+    "physicalExamination": {
+      "vitals": [],
+      "findings": [{ "General": "Patient expired" }]
+    },
+    "difficulty": "hard",
+    "diagnosisOptions": [
+      "Ischemic stroke",
+      "Subdural hematoma",
+      "Brain tumor",
+      "Hemorrhagic Stroke"
+    ],
+    "correctOption": 3
   }
 ]

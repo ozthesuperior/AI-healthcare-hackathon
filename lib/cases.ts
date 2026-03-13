@@ -14,7 +14,11 @@ function normalizeDifficulty(input?: CasesJsonCase["difficulty"]): Difficulty {
 }
 
 function normalizeSpecialty(input?: Specialty | string): Specialty {
-  switch (input) {
+  if (!input) return DEFAULT_SPECIALTY
+
+  const normalized = input.trim().toLowerCase().replace(/[\s-]+/g, "_")
+
+  switch (normalized) {
     case "cardiology":
     case "neurology":
     case "pulmonology":
@@ -24,7 +28,7 @@ function normalizeSpecialty(input?: Specialty | string): Specialty {
     case "nephrology":
     case "hematology":
     case "emergency":
-      return input
+      return normalized
     default:
       return DEFAULT_SPECIALTY
   }
@@ -87,7 +91,6 @@ function toCase(raw: CasesJsonCase): Case {
 
 const allCases = rawCases.map(toCase)
 const hasDifficultyMetadata = rawCases.some((c) => c.difficulty !== undefined)
-const hasSpecialtyMetadata = rawCases.some((c) => c.specialty !== undefined)
 
 export function getCases(opts: {
   difficulty?: Difficulty
@@ -105,11 +108,11 @@ export function getCases(opts: {
     }
   }
 
-  if (opts.specialty && opts.specialty !== "mixed" && hasSpecialtyMetadata) {
+  if (opts.specialty && opts.specialty !== "mixed") {
     const bySpecialty = pool.filter((c) => c.specialty === opts.specialty)
-    if (bySpecialty.length > 0) {
-      pool = bySpecialty
-    }
+    // Specialty selection is user-driven, so keep this strict:
+    // no matches should surface as "no cases" to the caller.
+    pool = bySpecialty
   }
 
   // Fisher-Yates shuffle then slice
