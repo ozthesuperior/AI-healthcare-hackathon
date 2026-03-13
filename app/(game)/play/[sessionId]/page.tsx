@@ -14,11 +14,14 @@ import {
   X,
   Clock,
   User,
+  Users,
   CheckCircle2,
   XCircle,
   Lightbulb,
   ChevronRight,
   Stethoscope,
+  FileText,
+  Pill,
 } from "lucide-react";
 import type { Case } from "@/lib/types";
 
@@ -50,6 +53,16 @@ function formatTime(ms: number): string {
   return `${mins}:${secs.toString().padStart(2, "0")}`;
 }
 
+function formatPatientHeader(age: number, sex: string): string {
+  const sexLabel =
+    sex.toUpperCase() === "F"
+      ? "Female"
+      : sex.toUpperCase() === "M"
+        ? "Male"
+        : sex;
+  return `${age} year old ${sexLabel} Patient`;
+}
+
 export default function GameSessionPage({
   params,
 }: {
@@ -70,6 +83,8 @@ export default function GameSessionPage({
   const [timedOut, setTimedOut] = useState(false);
   const [examModalOpen, setExamModalOpen] = useState(false);
   const [pmhModalOpen, setPmhModalOpen] = useState(false);
+  const [medsModalOpen, setMedsModalOpen] = useState(false);
+  const [socialHistoryModalOpen, setSocialHistoryModalOpen] = useState(false);
 
   // Load session from sessionStorage
   useEffect(() => {
@@ -268,6 +283,7 @@ export default function GameSessionPage({
   const homeMeds = currentCase.patient_persona.medications_at_home ?? [];
   const surgicalHistory = currentCase.patient_persona.past_surgical_history ?? [];
   const socialHistory = currentCase.patient_persona.social_history?.trim();
+  const hasMedications = admissionMeds.length > 0 || homeMeds.length > 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -344,8 +360,10 @@ export default function GameSessionPage({
             </div>
             <div className="min-w-0 flex-1">
               <h3 className="font-semibold text-foreground leading-tight text-sm mb-1">
-                {currentCase.patient_persona.age}yo{" "}
-                {currentCase.patient_persona.sex}
+                {formatPatientHeader(
+                  currentCase.patient_persona.age,
+                  currentCase.patient_persona.sex,
+                )}
               </h3>
               <div className="flex flex-wrap gap-1">
                 {(currentCase.physicalExamination?.vitals ?? []).map(
@@ -386,10 +404,13 @@ export default function GameSessionPage({
                   },
                 )}
               </div>
+              <p className="mt-1.5 text-[10px] text-muted-foreground">
+                Use the vitals and clinical details below to determine your most likely diagnosis.
+              </p>
             </div>
           </div>
 
-          {/* PMH + Physical Exam side-by-side */}
+          {/* PMH and Physical Exam first, then Medications and Social History */}
           <div className="grid grid-cols-2 gap-2 items-stretch">
             {/* PMH card */}
             <button
@@ -397,8 +418,8 @@ export default function GameSessionPage({
               className="text-left bg-muted/60 rounded-lg px-2.5 py-2 group hover:bg-muted transition-colors h-full flex flex-col justify-start"
             >
               <div className="flex items-center justify-between mb-1">
-                <span className="text-[10px] font-semibold text-amber-500">
-                  PMH
+                <span className="text-[10px] font-semibold text-foreground flex items-center gap-1">
+                  <FileText className="w-2.5 h-2.5" /> Past Medical History
                 </span>
                 <span className="text-[10px] text-muted-foreground group-hover:text-foreground transition-colors">
                   full report
@@ -419,7 +440,7 @@ export default function GameSessionPage({
               className="text-left bg-muted/60 rounded-lg px-2.5 py-2 group hover:bg-muted transition-colors h-full flex flex-col justify-start"
             >
               <div className="flex items-center justify-between mb-1">
-                <span className="text-[10px] font-semibold text-primary flex items-center gap-1">
+                <span className="text-[10px] font-semibold text-foreground flex items-center gap-1">
                   <Stethoscope className="w-2.5 h-2.5" /> Physical Exam
                 </span>
                 <span className="text-[10px] text-muted-foreground group-hover:text-foreground transition-colors">
@@ -434,6 +455,47 @@ export default function GameSessionPage({
                 )[0] ?? "—"}
               </p>
             </button>
+
+            {/* Medications card */}
+            <button
+              onClick={() => setMedsModalOpen(true)}
+              className="text-left bg-muted/60 rounded-lg px-2.5 py-2 group hover:bg-muted transition-colors h-full flex flex-col justify-start"
+            >
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-[10px] font-semibold text-foreground flex items-center gap-1">
+                  <Pill className="w-2.5 h-2.5" /> Medications
+                </span>
+                <span className="text-[10px] text-muted-foreground group-hover:text-foreground transition-colors">
+                  full report
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground leading-snug line-clamp-3">
+                {hasMedications
+                  ? [...admissionMeds, ...homeMeds]
+                      .slice(0, 3)
+                      .map((item) => `• ${item}`)
+                      .join("  ")
+                  : "No medications documented."}
+              </p>
+            </button>
+
+            {/* Social history card */}
+            <button
+              onClick={() => setSocialHistoryModalOpen(true)}
+              className="text-left bg-muted/60 rounded-lg px-2.5 py-2 group hover:bg-muted transition-colors h-full flex flex-col justify-start"
+            >
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-[10px] font-semibold text-foreground flex items-center gap-1">
+                  <Users className="w-2.5 h-2.5" /> Social History
+                </span>
+                <span className="text-[10px] text-muted-foreground group-hover:text-foreground transition-colors">
+                  full report
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground leading-snug line-clamp-3">
+                {socialHistory || "No social history documented."}
+              </p>
+            </button>
           </div>
         </Card>
 
@@ -441,7 +503,8 @@ export default function GameSessionPage({
         <Dialog open={pmhModalOpen} onOpenChange={setPmhModalOpen}>
           <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2 text-amber-500">
+              <DialogTitle className="flex items-center gap-2">
+                <FileText className="w-4 h-4" />
                 Past Medical History
               </DialogTitle>
             </DialogHeader>
@@ -451,21 +514,21 @@ export default function GameSessionPage({
                   key={item}
                   className="flex items-start gap-2 rounded-lg bg-muted/50 px-3 py-2"
                 >
-                  <span className="text-amber-500 mt-px">•</span>
+                  <span className="mt-px">•</span>
                   <span className="text-sm text-foreground">{item}</span>
                 </li>
               ))}
             </ul>
             {allergyItems.length > 0 && (
               <div className="mt-4">
-                <p className="text-xs font-semibold text-destructive mb-2">
+                <p className="text-xs font-semibold text-foreground mb-2">
                   Allergies
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {allergyItems.map((allergy) => (
                     <span
                       key={allergy}
-                      className="inline-flex items-center rounded-full bg-destructive/10 px-2 py-0.5 text-xs text-destructive"
+                      className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs text-foreground"
                     >
                       {allergy}
                     </span>
@@ -473,9 +536,35 @@ export default function GameSessionPage({
                 </div>
               </div>
             )}
-            {admissionMeds.length > 0 && (
+            {surgicalHistory.length > 0 && (
               <div className="mt-4">
-                <p className="text-xs font-semibold text-primary mb-2">
+                <p className="text-xs font-semibold text-foreground mb-2">
+                  Past Surgical History
+                </p>
+                <ul className="space-y-1.5">
+                  {surgicalHistory.map((entry) => (
+                    <li key={entry} className="text-sm text-muted-foreground">
+                      - {entry}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Medications Modal */}
+        <Dialog open={medsModalOpen} onOpenChange={setMedsModalOpen}>
+          <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Pill className="w-4 h-4" />
+                Medications
+              </DialogTitle>
+            </DialogHeader>
+            {admissionMeds.length > 0 && (
+              <div className="mt-2">
+                <p className="text-xs font-semibold text-foreground mb-2">
                   Medications on Admission
                 </p>
                 <ul className="space-y-1.5">
@@ -489,7 +578,7 @@ export default function GameSessionPage({
             )}
             {homeMeds.length > 0 && (
               <div className="mt-4">
-                <p className="text-xs font-semibold text-primary mb-2">
+                <p className="text-xs font-semibold text-foreground mb-2">
                   Home Medications
                 </p>
                 <ul className="space-y-1.5">
@@ -501,30 +590,31 @@ export default function GameSessionPage({
                 </ul>
               </div>
             )}
-            {surgicalHistory.length > 0 && (
-              <div className="mt-4">
-                <p className="text-xs font-semibold text-primary mb-2">
-                  Past Surgical History
-                </p>
-                <ul className="space-y-1.5">
-                  {surgicalHistory.map((entry) => (
-                    <li key={entry} className="text-sm text-muted-foreground">
-                      - {entry}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            {!hasMedications && (
+              <p className="mt-2 text-sm text-muted-foreground">
+                No medications documented.
+              </p>
             )}
-            {socialHistory && (
-              <div className="mt-4 rounded-lg bg-muted/50 px-3 py-2.5">
-                <p className="text-xs font-semibold text-primary mb-1">
-                  Social History
-                </p>
-                <p className="text-sm text-foreground whitespace-pre-line leading-snug">
-                  {socialHistory}
-                </p>
-              </div>
-            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Social History Modal */}
+        <Dialog
+          open={socialHistoryModalOpen}
+          onOpenChange={setSocialHistoryModalOpen}
+        >
+          <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Users className="w-4 h-4" />
+                Social History
+              </DialogTitle>
+            </DialogHeader>
+            <div className="mt-2 rounded-lg bg-muted/50 px-3 py-2.5">
+              <p className="text-sm text-foreground whitespace-pre-line leading-snug">
+                {socialHistory || "No social history documented."}
+              </p>
+            </div>
           </DialogContent>
         </Dialog>
 
@@ -533,7 +623,7 @@ export default function GameSessionPage({
           <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
-                <Stethoscope className="w-4 h-4 text-primary" />
+                <Stethoscope className="w-4 h-4" />
                 Physical Examination
               </DialogTitle>
             </DialogHeader>
@@ -546,7 +636,7 @@ export default function GameSessionPage({
                       key={label}
                       className="rounded-lg bg-muted/50 px-3 py-2.5"
                     >
-                      <p className="text-xs font-semibold text-primary mb-0.5">
+                      <p className="text-xs font-semibold text-foreground mb-0.5">
                         {label}
                       </p>
                       <p className="text-sm text-foreground leading-snug">
@@ -558,7 +648,7 @@ export default function GameSessionPage({
               )}
               {currentCase.imaging_text && (
                 <div className="rounded-lg bg-muted/50 px-3 py-2.5">
-                  <p className="text-xs font-semibold text-primary mb-0.5">
+                  <p className="text-xs font-semibold text-foreground mb-0.5">
                     Imaging
                   </p>
                   <p className="text-sm text-foreground leading-snug">
