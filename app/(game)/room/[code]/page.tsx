@@ -5,8 +5,14 @@ import { useRouter } from "next/navigation"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import {
   Crown, Copy, Check, Play, Users, Clock,
-  CheckCircle2, XCircle, Activity, User, Lightbulb
+  CheckCircle2, User, Stethoscope
 } from "lucide-react"
 import type { Room, Player, RoomScore, SSEEvent } from "@/lib/types"
 import type { Case } from "@/lib/types"
@@ -14,13 +20,6 @@ import type { Case } from "@/lib/types"
 type SafeCase = Omit<Case, "correct_answer" | "accepted_synonyms" | "explanation" | "distractors">
 
 type RoomPhase = "lobby" | "playing" | "question_ended" | "ended"
-
-interface QuestionEndedPayload {
-  index: number
-  correct_answer: number
-  explanation: string
-  scores: RoomScore[]
-}
 
 interface CompetitiveSubmitResponse {
   isCorrect: boolean
@@ -71,12 +70,13 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [questionStart, setQuestionStart] = useState(Date.now())
-  const [qEndedPayload, setQEndedPayload] = useState<QuestionEndedPayload | null>(null)
   const [scores, setScores] = useState<RoomScore[]>([])
   const [finalRankings, setFinalRankings] = useState<RoomScore[]>([])
   const [competitiveDone, setCompetitiveDone] = useState(false)
   const [answerKey, setAnswerKey] = useState<RoomAnswerKeyItem[]>([])
   const [answerKeyLoading, setAnswerKeyLoading] = useState(false)
+  const [examModalOpen, setExamModalOpen] = useState(false)
+  const [pmhModalOpen, setPmhModalOpen] = useState(false)
 
   const eventSourceRef = useRef<EventSource | null>(null)
 
@@ -186,12 +186,10 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
         setTimerEnd(event.payload.timer_end)
         setSelected(null)
         setSubmitted(false)
-        setQEndedPayload(null)
         setQuestionStart(Date.now())
         setPhase("playing")
         break
       case "question_ended":
-        setQEndedPayload(event.payload)
         setScores(event.payload.scores)
         setPhase("question_ended")
         break
@@ -239,7 +237,6 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
             setQuestionIndex((i) => i + 1)
             setSelected(null)
             setSubmitted(false)
-            setQEndedPayload(null)
             setQuestionStart(Date.now())
             setPhase("playing")
           } else {
@@ -270,8 +267,6 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
   }
 
   const isHost = room?.host_guest_id === myGuestId
-  const canRevealAnswers = !isHost && room?.mode !== "competitive"
-
   // -------------------- LOBBY --------------------
   if (phase === "lobby") {
     return (
@@ -452,19 +447,22 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
       .map((item) => item.trim())
       .filter(Boolean)
   const allergyItems = currentCase.patient_persona.allergies ?? []
+  const admissionMeds = currentCase.patient_persona.medications_on_admission ?? []
+  const homeMeds = currentCase.patient_persona.medications_at_home ?? []
+  const surgicalHistory = currentCase.patient_persona.past_surgical_history ?? []
   const socialHistory = currentCase.patient_persona.social_history?.trim()
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-background/95 backdrop-blur border-b border-border p-4">
+      <header className="sticky top-0 z-10 bg-background/95 backdrop-blur border-b border-border py-2 px-3">
         <div className="flex items-center justify-between max-w-4xl mx-auto">
           <span className="text-sm font-medium text-muted-foreground">
-            Q{questionIndex + 1}/{totalQuestions}
+            {questionIndex + 1}/{totalQuestions}
           </span>
 
           {timerEnd && timeRemainingMs !== null && (
-            <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full ${
+            <div className={`flex items-center gap-1 px-2 py-1 rounded-full ${
               timeRemainingMs <= 10_000 ? "bg-destructive/10 text-destructive" : "bg-muted"
             }`}>
               <Clock className="w-4 h-4" />
@@ -472,99 +470,254 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
             </div>
           )}
 
-          <span className="text-xs text-muted-foreground">
+          <span className="text-sm text-muted-foreground">
             {players.length} players
           </span>
         </div>
-        <div className="max-w-4xl mx-auto mt-3">
+        <div className="max-w-4xl mx-auto mt-2">
           <div className="h-1 bg-muted rounded-full overflow-hidden">
             <div
-              className="h-full bg-primary rounded-full transition-all"
+              className="h-full bg-primary rounded-full transition-all duration-300"
               style={{ width: `${((questionIndex + (phase === "question_ended" ? 1 : 0)) / totalQuestions) * 100}%` }}
             />
           </div>
         </div>
       </header>
 
-      <div className="p-4 md:p-8 max-w-4xl mx-auto">
+      <div className="p-3 md:p-6 max-w-4xl mx-auto">
         {/* Patient Card */}
-        <Card className="p-4 mb-4 border-0 shadow-sm">
-          <div className="flex items-start gap-3 mb-3">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-              <User className="w-5 h-5 text-primary" />
+        <Card className="p-3 mb-3 border-0 shadow-sm overflow-hidden">
+          <div className="flex items-center gap-2.5 mb-2">
+            <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+              <User className="w-4 h-4 text-primary" />
             </div>
-            <div>
-              <h3 className="font-semibold text-foreground">
+            <div className="min-w-0 flex-1">
+              <h3 className="font-semibold text-foreground leading-tight text-sm mb-1">
                 {currentCase.patient_persona.age}yo {currentCase.patient_persona.sex}
               </h3>
-              <p className="text-sm text-muted-foreground">{currentCase.patient_persona.chief_complaint}</p>
+              <div className="flex flex-wrap gap-1">
+                {(currentCase.physicalExamination?.vitals ?? []).map((vital) => {
+                  const [label, value] = Object.entries(vital)[0]
+                  const key = label.toLowerCase()
+                  const labelColor =
+                    key.includes("blood pressure") || key.includes("bp")
+                      ? "text-rose-500"
+                      : key.includes("pulse") || key.includes("hr") || key.includes("heart")
+                        ? "text-pink-500"
+                        : key.includes("temp")
+                          ? "text-amber-500"
+                          : key.includes("respiratory") || key.includes("rr")
+                            ? "text-blue-500"
+                            : key.includes("spo2") || key.includes("oxygen") || key.includes("o2")
+                              ? "text-teal-500"
+                              : "text-muted-foreground"
+                  return (
+                    <div key={label} className="flex items-center gap-1 px-2 py-0.5 bg-muted/70 rounded-md">
+                      <span className={`text-[10px] font-medium ${labelColor}`}>
+                        {label}:
+                      </span>
+                      <span className="text-[10px] font-semibold text-foreground">{value}</span>
+                    </div>
+                  )
+                })}
+              </div>
             </div>
           </div>
 
-          <p className="text-xs text-muted-foreground mb-3">
-            <span className="font-medium">History:</span>{" "}
-            {pmhItems.slice(0, 3).join(", ")}
-            {pmhItems.length > 3 ? ` (+${pmhItems.length - 3} more)` : ""}
-          </p>
-
-          {allergyItems.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mb-3">
-              {allergyItems.map((allergy) => (
-                <span
-                  key={allergy}
-                  className="inline-flex items-center rounded-full bg-destructive/10 px-2 py-0.5 text-[11px] text-destructive"
-                >
-                  {allergy}
+          <div className="grid grid-cols-2 gap-2 items-stretch">
+            <button
+              onClick={() => setPmhModalOpen(true)}
+              className="text-left bg-muted/60 rounded-lg px-2.5 py-2 group hover:bg-muted transition-colors h-full flex flex-col justify-start"
+            >
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-[10px] font-semibold text-amber-500">
+                  PMH
                 </span>
-              ))}
-            </div>
-          )}
+                <span className="text-[10px] text-muted-foreground group-hover:text-foreground transition-colors">
+                  full report
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground leading-snug line-clamp-3">
+                {pmhItems
+                  .slice(0, 3)
+                  .map((item) => `• ${item}`)
+                  .join("  ")}
+                {pmhItems.length > 3 && ` +${pmhItems.length - 3} more`}
+              </p>
+            </button>
 
-          <div className="flex flex-wrap gap-2 mb-3">
-            {(currentCase.physicalExamination?.vitals ?? []).map((vital) => {
-              const [label, value] = Object.entries(vital)[0]
-              return (
-                <div key={label} className="flex items-center gap-1.5 px-2.5 py-1.5 bg-muted rounded-lg">
-                  <Activity className="w-3 h-3 text-muted-foreground" />
-                  <span className="text-xs font-medium">{label}: {value}</span>
-                </div>
-              )
-            })}
+            <button
+              onClick={() => setExamModalOpen(true)}
+              className="text-left bg-muted/60 rounded-lg px-2.5 py-2 group hover:bg-muted transition-colors h-full flex flex-col justify-start"
+            >
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-[10px] font-semibold text-primary flex items-center gap-1">
+                  <Stethoscope className="w-2.5 h-2.5" /> Physical Exam
+                </span>
+                <span className="text-[10px] text-muted-foreground group-hover:text-foreground transition-colors">
+                  full report
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground leading-snug line-clamp-3">
+                {Object.values(
+                  (currentCase.physicalExamination?.findings ?? []).find(
+                    (f) => Object.keys(f)[0].toLowerCase() === "general",
+                  ) ?? {},
+                )[0] ?? "—"}
+              </p>
+            </button>
           </div>
-
-          <div className="space-y-1 mb-3">
-            {(currentCase.physicalExamination?.findings ?? []).map((finding) => {
-              const [label, value] = Object.entries(finding)[0]
-              return (
-                <p key={label} className="text-xs text-muted-foreground">
-                  <span className="font-medium text-foreground">{label}:</span> {value}
-                </p>
-              )
-            })}
-          </div>
-
-          {socialHistory && (
-            <p className="text-xs text-muted-foreground whitespace-pre-line">
-              <span className="font-medium text-foreground">Social:</span> {socialHistory}
-            </p>
-          )}
-
-          {currentCase.labs && currentCase.labs.length > 0 && (
-            <div className="mt-3 space-y-1">
-              {currentCase.labs.map((lab) => (
-                <p key={lab} className="text-xs font-mono bg-muted/50 px-2 py-1 rounded">{lab}</p>
-              ))}
-            </div>
-          )}
         </Card>
+
+        <Dialog open={pmhModalOpen} onOpenChange={setPmhModalOpen}>
+          <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-amber-500">
+                Past Medical History
+              </DialogTitle>
+            </DialogHeader>
+            <ul className="mt-2 space-y-2">
+              {pmhItems.map((item) => (
+                <li
+                  key={item}
+                  className="flex items-start gap-2 rounded-lg bg-muted/50 px-3 py-2"
+                >
+                  <span className="text-amber-500 mt-px">•</span>
+                  <span className="text-sm text-foreground">{item}</span>
+                </li>
+              ))}
+            </ul>
+            {allergyItems.length > 0 && (
+              <div className="mt-4">
+                <p className="text-xs font-semibold text-destructive mb-2">
+                  Allergies
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {allergyItems.map((allergy) => (
+                    <span
+                      key={allergy}
+                      className="inline-flex items-center rounded-full bg-destructive/10 px-2 py-0.5 text-xs text-destructive"
+                    >
+                      {allergy}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            {admissionMeds.length > 0 && (
+              <div className="mt-4">
+                <p className="text-xs font-semibold text-primary mb-2">
+                  Medications on Admission
+                </p>
+                <ul className="space-y-1.5">
+                  {admissionMeds.map((med) => (
+                    <li key={med} className="text-sm text-muted-foreground">
+                      - {med}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {homeMeds.length > 0 && (
+              <div className="mt-4">
+                <p className="text-xs font-semibold text-primary mb-2">
+                  Home Medications
+                </p>
+                <ul className="space-y-1.5">
+                  {homeMeds.map((med) => (
+                    <li key={med} className="text-sm text-muted-foreground">
+                      - {med}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {surgicalHistory.length > 0 && (
+              <div className="mt-4">
+                <p className="text-xs font-semibold text-primary mb-2">
+                  Past Surgical History
+                </p>
+                <ul className="space-y-1.5">
+                  {surgicalHistory.map((entry) => (
+                    <li key={entry} className="text-sm text-muted-foreground">
+                      - {entry}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {socialHistory && (
+              <div className="mt-4 rounded-lg bg-muted/50 px-3 py-2.5">
+                <p className="text-xs font-semibold text-primary mb-1">
+                  Social History
+                </p>
+                <p className="text-sm text-foreground whitespace-pre-line leading-snug">
+                  {socialHistory}
+                </p>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={examModalOpen} onOpenChange={setExamModalOpen}>
+          <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Stethoscope className="w-4 h-4 text-primary" />
+                Physical Examination
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-3 mt-2">
+              {(currentCase.physicalExamination?.findings ?? []).map((finding) => {
+                const [label, value] = Object.entries(finding)[0]
+                return (
+                  <div
+                    key={label}
+                    className="rounded-lg bg-muted/50 px-3 py-2.5"
+                  >
+                    <p className="text-xs font-semibold text-primary mb-0.5">
+                      {label}
+                    </p>
+                    <p className="text-sm text-foreground leading-snug">
+                      {value}
+                    </p>
+                  </div>
+                )
+              })}
+              {currentCase.imaging_text && (
+                <div className="rounded-lg bg-muted/50 px-3 py-2.5">
+                  <p className="text-xs font-semibold text-primary mb-0.5">
+                    Imaging
+                  </p>
+                  <p className="text-sm text-foreground leading-snug">
+                    {currentCase.imaging_text}
+                  </p>
+                </div>
+              )}
+              {currentCase.labs && currentCase.labs.length > 0 && (
+                <div className="rounded-lg bg-muted/50 px-3 py-2.5">
+                  <p className="text-xs font-semibold text-primary mb-1">
+                    Labs
+                  </p>
+                  <div className="space-y-1">
+                    {currentCase.labs.map((lab) => (
+                      <p key={lab} className="text-xs font-mono bg-background/60 px-2 py-1 rounded">
+                        {lab}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
 
         <div className="mb-4">
           <h2 className="text-base font-semibold text-foreground">{currentCase.question_text}</h2>
         </div>
 
-        {/* Submitted banner — only shown on the last question */}
-        {submitted && phase === "playing" && questionIndex + 1 === totalQuestions && (
-          <div className="mb-4 p-3 rounded-xl bg-primary/10 text-center">
+        {submitted && phase === "playing" && (
+          <div className="mb-4 p-3 rounded-xl bg-primary/10 border border-primary/20">
             <p className="text-sm font-medium text-primary">Answer submitted — waiting for others…</p>
           </div>
         )}
@@ -573,17 +726,12 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
         <div className="space-y-3 mb-6">
           {currentCase.options.map((option, index) => {
             const isSelected = selected === index
-            const isCorrect = canRevealAnswers && qEndedPayload?.correct_answer === index
-            const isWrong = canRevealAnswers && phase === "question_ended" && isSelected && !isCorrect
 
             let cardClass = "border-0 shadow-sm transition-all"
-            if (phase === "question_ended" && canRevealAnswers) {
-              if (isCorrect) cardClass += " bg-emerald-500/10 border-2 border-emerald-500"
-              else if (isWrong) cardClass += " bg-destructive/10 border-2 border-destructive"
-            } else if (isSelected) {
+            if (isSelected) {
               cardClass += " border-2 border-primary bg-primary/5"
             } else if (!submitted) {
-              cardClass += " cursor-pointer hover:shadow-md"
+              cardClass += " cursor-pointer hover:border-border hover:shadow-md"
             }
 
             return (
@@ -594,14 +742,9 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
               >
                 <div className="flex items-center gap-3">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm font-medium ${
-                    phase === "question_ended" && canRevealAnswers && isCorrect ? "bg-emerald-500 text-white"
-                    : phase === "question_ended" && canRevealAnswers && isWrong ? "bg-destructive text-destructive-foreground"
-                    : isSelected ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-muted-foreground"
+                    isSelected ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
                   }`}>
-                    {phase === "question_ended" && canRevealAnswers && isCorrect ? <CheckCircle2 className="w-4 h-4" />
-                    : phase === "question_ended" && canRevealAnswers && isWrong ? <XCircle className="w-4 h-4" />
-                    : String.fromCharCode(65 + index)}
+                    {String.fromCharCode(65 + index)}
                   </div>
                   <span className="text-sm font-medium text-foreground">{option}</span>
                 </div>
@@ -610,16 +753,11 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
           })}
         </div>
 
-        {/* Question ended explanation */}
-        {phase === "question_ended" && qEndedPayload && canRevealAnswers && (
-          <Card className="p-4 mb-6 border-0 shadow-sm bg-blue-500/5">
-            <div className="flex items-start gap-3">
-              <Lightbulb className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
-              <div>
-                <p className="font-medium text-foreground mb-1">Explanation</p>
-                <p className="text-sm text-muted-foreground">{qEndedPayload.explanation}</p>
-              </div>
-            </div>
+        {phase === "question_ended" && (
+          <Card className="p-4 mb-6 border-0 shadow-sm bg-muted/40">
+            <p className="text-sm text-muted-foreground">
+              Correct answers are revealed after the match ends.
+            </p>
           </Card>
         )}
 

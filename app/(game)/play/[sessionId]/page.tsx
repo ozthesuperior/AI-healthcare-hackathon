@@ -440,7 +440,7 @@ export default function GameSessionPage({
 
         {/* PMH Modal */}
         <Dialog open={pmhModalOpen} onOpenChange={setPmhModalOpen}>
-          <DialogContent className="max-w-md">
+          <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2 text-amber-500">
                 Past Medical History
@@ -531,7 +531,7 @@ export default function GameSessionPage({
 
         {/* Physical Exam Modal */}
         <Dialog open={examModalOpen} onOpenChange={setExamModalOpen}>
-          <DialogContent className="max-w-md">
+          <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <Stethoscope className="w-4 h-4 text-primary" />
